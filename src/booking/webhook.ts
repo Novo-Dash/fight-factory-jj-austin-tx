@@ -93,7 +93,23 @@ async function post(url: string, payload: Record<string, unknown>): Promise<void
 // Webhook 1 — Lead (destino: LeadConnector / GHL)
 // -----------------------------------------------------------------------------
 
+/**
+ * Visita vinda de link do GHL (SMS/e-mail com 'full_name'/'email'/'phone' na URL)
+ * sem campanha na sessão: o contato já existe no CRM. Mandar o Webhook 1 de
+ * novo sobrescreveria a atribuição dele com vazio e o source com o rótulo
+ * fixo (spec §3.1, 2026-09-10). Nesse caso o Webhook 1 não dispara; o
+ * agendamento segue normal pelo Webhook 2.
+ */
+export function isGhlReturnVisit(): boolean {
+  const a = getAttribution() as Record<string, unknown>
+  const campaignKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'fbclid', 'gclid', 'gad_source', 'wbraid', 'gbraid']
+  if (campaignKeys.some((k) => Boolean(a[k]))) return false
+  const landing = typeof a.landing_url === 'string' ? a.landing_url : window.location.href
+  return /[?&](full_name|email|phone)=/.test(landing)
+}
+
 export function sendLeadWebhook(data: BookingData): void {
+  if (isGhlReturnVisit()) return
   if (!data.program) return
   const { first, last } = splitName(data.name)
   const cn = childNameOrNull(data)
