@@ -25,18 +25,18 @@ export const ADULTS: Program = {
   eyebrow: 'Ages 13 and up',
   title: 'Adults\nBrazilian\nJiu-Jitsu',
   ages: '13+',
-  copy: 'Brazilian Jiu-Jitsu (BJJ) has surged in popularity—and for good reason. Designed for real-world self-defense, BJJ teaches practical techniques that anyone can use, regardless of size or strength. Focusing on ground control, it incorporates holds, throws, and submissions that allow you to neutralize larger opponents effectively—without relying on brute force or causing harm. It’s a smart, skill-based approach to personal protection that everyone can benefit from.',
+  copy: 'Brazilian Jiu-Jitsu (BJJ) has surged in popularity, and for good reason. Designed for real-world self-defense, BJJ teaches practical techniques that anyone can use, regardless of size or strength. Focusing on ground control, it incorporates holds, throws, and submissions that allow you to neutralize larger opponents effectively, without relying on brute force or causing harm. It’s a smart, skill-based approach to personal protection that everyone can benefit from.',
   photo: '/site/programs/adults-gi.webp',
   classes: [
     {
-      name: 'Gi — All Levels',
+      name: 'Gi · All Levels',
       note: 'Every belt on the mat together. The default class.',
       days: 'Mon · Wed · Thu · Fri · Sat',
       times: '7:00 AM · 11:00 AM · 6:15 PM',
       track: 'gi',
     },
     {
-      name: 'No-Gi — All Levels',
+      name: 'No-Gi · All Levels',
       note: 'Shorts and rash guard. Grips replaced by control.',
       days: 'Mon – Fri',
       times: '7:00 AM · 11:00 AM · 12:00 PM · 6:15 PM · 7:15 PM',
@@ -85,25 +85,25 @@ export const KIDS: Program = {
   eyebrow: 'Ages 4 to 12',
   title: 'Kids\nBrazilian\nJiu-Jitsu',
   ages: '4–12',
-  copy: 'At Fight Factory Jiu-Jitsu, we believe in building strong foundations early. Our Kids BJJ Program offers a safe, supportive space where children can improve fitness, gain confidence, and develop discipline through the art of Brazilian Jiu-Jitsu. Designed for ages 4–6 and 7–12, each class is led by experienced instructors who focus on both skill development and character growth—helping kids succeed on and off the mat.',
+  copy: 'At Fight Factory Jiu-Jitsu, we believe in building strong foundations early. Our Kids BJJ Program offers a safe, supportive space where children can improve fitness, gain confidence, and develop discipline through the art of Brazilian Jiu-Jitsu. Designed for ages 4–6 and 7–12, each class is led by experienced instructors who focus on both skill development and character growth, helping kids succeed on and off the mat.',
   photo: '/site/programs/kids-a.webp',
   classes: [
     {
-      name: 'Kids Gi — Ages 4–6',
+      name: 'Kids Gi · Ages 4–6',
       note: 'Forty-five minutes of games that happen to be Jiu-Jitsu.',
       days: 'Mon · Wed · Thu',
       times: '4:30 PM',
       track: 'kids',
     },
     {
-      name: 'Kids Gi — Ages 7–12',
+      name: 'Kids Gi · Ages 7–12',
       note: 'Technique, drilling and controlled rounds.',
       days: 'Mon · Wed · Thu',
       times: '5:15 PM',
       track: 'kids',
     },
     {
-      name: 'Kids No-Gi — Ages 8+',
+      name: 'Kids No-Gi · Ages 8+',
       note: 'The no-gi block for the older group.',
       days: 'Tuesday',
       times: '5:00 PM',
@@ -124,13 +124,13 @@ export const STARTING_POINTS = [
   },
   {
     who: 'New, but wants the normal room',
-    pick: 'Gi — All Levels',
+    pick: 'Gi · All Levels',
     when: 'Mon · Wed · Thu · Fri · Sat',
     why: 'Beginners train alongside every belt. The coaches pair you deliberately.',
   },
   {
     who: 'Wrestled or trained before',
-    pick: 'No-Gi — All Levels',
+    pick: 'No-Gi · All Levels',
     when: 'Mon – Fri',
     why: 'Closest to what you already know. Grips come later.',
   },
@@ -142,13 +142,13 @@ export const STARTING_POINTS = [
   },
   {
     who: 'A child, 4 to 6',
-    pick: 'Kids Gi — Ages 4–6',
+    pick: 'Kids Gi · Ages 4–6',
     when: 'Mon · Wed · Thu, 4:30 PM',
     why: 'Forty-five minutes. Movement, balance and taking turns.',
   },
   {
     who: 'A child, 7 to 12',
-    pick: 'Kids Gi — Ages 7–12',
+    pick: 'Kids Gi · Ages 7–12',
     when: 'Mon · Wed · Thu, 5:15 PM',
     why: 'Real technique, with the character work built in.',
   },
@@ -164,7 +164,7 @@ export const FIRST_CLASS = [
   {
     n: '02',
     title: 'Turn up fifteen minutes early',
-    text: 'Comfortable clothes are enough — a clean uniform is provided at no cost. A coach walks you through the room before class starts.',
+    text: 'Comfortable clothes are enough. A clean uniform is provided at no cost. A coach walks you through the room before class starts.',
   },
   {
     n: '03',

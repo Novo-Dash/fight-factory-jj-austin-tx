@@ -15,7 +15,7 @@ export interface Review {
 
 /** VERBATIM section intro from the old site. */
 export const REVIEWS_COPY =
-  'At Fight Factory, we’re proud to offer a supportive, motivating, and inclusive environment for every student. But don’t just take our word for it—see what our members have to say!'
+  'At Fight Factory, we’re proud to offer a supportive, motivating, and inclusive environment for every student. But don’t just take our word for it. See what our members have to say!'
 
 export const REVIEWS: Review[] = [
   {

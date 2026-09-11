@@ -99,16 +99,16 @@ export const ABOUT_OPENER =
 
 /** About page, the academy's approach. VERBATIM from the old home page. */
 export const APPROACH_COPY =
-  'Our approach to grappling emphasizes self-defense, not aggression, allowing students to master the art without causing harm. This commitment to safety is reflected in every aspect of our training environment. Regardless of age or experience, every student is treated with equal respect and encouraged to find harmony between competition and camaraderie. At Fight Factory, we honor every journey — valuing the white belt just as much as the black belt.'
+  'Our approach to grappling emphasizes self-defense, not aggression, allowing students to master the art without causing harm. This commitment to safety is reflected in every aspect of our training environment. Regardless of age or experience, every student is treated with equal respect and encouraged to find harmony between competition and camaraderie. At Fight Factory, we honor every journey, valuing the white belt just as much as the black belt.'
 
 /** Free trial. VERBATIM from the old site's "Try a class for free" band. */
 export const TRIAL_COPY =
-  'Curious about Jiu-Jitsu? Come train with us and enjoy your first class completely free. No pressure—just a chance to see if our academy is the right fit for you.'
-export const TRIAL_HEADLINE = 'Experience Fight Factory Jiu-Jitsu—No Commitment, No Cost.'
+  'Curious about Jiu-Jitsu? Come train with us and enjoy your first class completely free. No pressure, just a chance to see if our academy is the right fit for you.'
+export const TRIAL_HEADLINE = 'Experience Fight Factory Jiu-Jitsu. No Commitment, No Cost.'
 
 /** Contact. VERBATIM from /contact-us. */
 export const CONTACT_COPY =
-  'Fight Factory Jiu-Jitsu has everything you need to start your journey—except you! Reach out today and take the first step toward strength, skill, and community.'
+  'Fight Factory Jiu-Jitsu has everything you need to start your journey, except you! Reach out today and take the first step toward strength, skill, and community.'
 
 /** Schedule. VERBATIM from /schedule. */
 export const SCHEDULE_COPY =
@@ -116,7 +116,7 @@ export const SCHEDULE_COPY =
 
 /** Gallery. VERBATIM from the old home page. */
 export const GALLERY_COPY =
-  'Explore photos from our classes, training sessions, and events. Get a glimpse of the action, focus, and camaraderie that define Fight Factory. From intense training drills to unforgettable moments on the mat—this is where champions are made.'
+  'Explore photos from our classes, training sessions, and events. Get a glimpse of the action, focus, and camaraderie that define Fight Factory. From intense training drills to unforgettable moments on the mat. This is where champions are made.'
 
 // ── Opening hours, derived from the published class schedule ───────────────
 export const HOURS = [
@@ -130,6 +130,6 @@ export const HOURS = [
 // Rendered as visible markers. Each is one edit away from being finished.
 export const PENDING = {
   pricing:
-    'Membership pricing is not published yet — the enquiry form routes pricing requests to the team.',
+    'Membership pricing is not published yet. The enquiry form routes pricing requests to the team.',
   calebPortrait: 'Portrait pending',
 } as const

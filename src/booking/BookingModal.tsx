@@ -97,7 +97,7 @@ export function BookingModal({ isOpen, onClose, kidsMode }: BookingModalProps) {
               Your First Class<br />Is On Us
             </h2>
             <p className="text-white/60 text-sm mb-6" style={{ lineHeight: 1.6 }}>
-              Book a free trial at Austin's premier BJJ academy — no pressure, just a great first class.
+              Book a free trial at Austin's premier BJJ academy. No pressure, just a great first class.
             </p>
             <ul className="space-y-2.5">
               {BRAND_BULLETS.map((b) => (

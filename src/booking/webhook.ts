@@ -125,7 +125,7 @@ export function sendLeadWebhook(data: BookingData, source: string = SOURCE_LABEL
 
 export function sendBookingWebhook(data: BookingData, source: string = SOURCE_LABEL): void {
   if (!data.date || !data.time) {
-    console.warn('[webhook] booking sem data/hora — ignorado')
+    console.warn('[webhook] booking sem data/hora, ignorado')
     return
   }
   const cn = childNameOrNull(data)

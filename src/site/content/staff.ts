@@ -30,7 +30,7 @@ export const HEAD_COACH: Coach = {
     'Brazilian National Champion',
     'Multiple-time State Champion',
     'World Championship silver medalist',
-    'Founded Fight Factory Jiu Jitsu, Austin — 2013',
+    'Founded Fight Factory Jiu Jitsu, Austin · 2013',
   ],
   photo: '/site/team/rodrigo.webp',
   bio: [
@@ -39,7 +39,7 @@ export const HEAD_COACH: Coach = {
     'His passion for teaching soon took him around the world. In London, he became the head instructor at London Fight Factory, where he taught until 2008. He also shared his knowledge in Russia, Singapore, Italy, Sweden, and Spain, before returning to Rio de Janeiro.',
     'In 2013, Rodrigo founded Fight Factory Jiu Jitsu in Austin, Texas, which has since grown into one of the city’s premier academies. Under his leadership, the academy has produced world-class athletes including Kody Steele (UFC fighter), Andrew Tackett (UFC BJJ Champion), and William Tackett (UFC BJJ fighter). Today, Fight Factory continues to expand with affiliate schools in San Antonio, Belton, and Marble Falls, Texas.',
     'As a competitor, Rodrigo is a Brazilian National Champion, multiple-time State Champion, and World Championship silver medalist. His achievements reflect both his dedication to the art and his ability to pass on high-level knowledge to the next generation.',
-    'Rodrigo remains committed to building champions on and off the mats—sharing Jiu-Jitsu as a tool for discipline, resilience, and community worldwide.',
+    'Rodrigo remains committed to building champions on and off the mats, sharing Jiu-Jitsu as a tool for discipline, resilience, and community worldwide.',
   ],
 }
 

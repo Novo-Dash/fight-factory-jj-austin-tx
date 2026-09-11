@@ -51,7 +51,7 @@ export function Header({ current, overDark = false }: { current: string; overDar
         }`}
       >
         <div className="wrap flex h-16 items-center justify-between gap-6 md:h-[74px]">
-          <a href="/home" className="flex shrink-0 items-center" aria-label={`${ACADEMY.name} — home`}>
+          <a href="/home" className="flex shrink-0 items-center" aria-label={`${ACADEMY.name} home`}>
             {/* Sized by WIDTH, not height. The dark and light wordmarks are
                 different artwork with different proportions (5.3:1 and 7.1:1),
                 so matching their heights makes one of them 50px wider than the

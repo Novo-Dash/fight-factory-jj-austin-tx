@@ -21,7 +21,7 @@ export function KidsFooter() {
           style={{ border: 0, display: 'block' }}
           allowFullScreen loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
-          title="Fight Factory Jiu-Jitsu — Austin, TX"
+          title="Fight Factory Jiu-Jitsu, Austin, TX"
         />
       </div>
 

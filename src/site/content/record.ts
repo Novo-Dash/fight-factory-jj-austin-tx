@@ -114,7 +114,7 @@ export const MILESTONES: Milestone[] = [
   {
     year: '2005',
     title: 'Black belt',
-    text: 'Awarded by Léo Vieira — multiple-time ADCC and World Champion, and one of the most accomplished athletes in the sport.',
+    text: 'Awarded by Léo Vieira, multiple-time ADCC and World Champion, and one of the most accomplished athletes in the sport.',
     photo: '/site/home/rodrigo-mat.webp',
     alt: 'Rodrigo Cabral in his black gi',
   },
@@ -135,7 +135,7 @@ export const MILESTONES: Milestone[] = [
   {
     year: 'Now',
     title: 'UFC BJJ champion',
-    text: 'Andrew Tackett — coached here since he was a child — holds the UFC BJJ title, alongside three Jiu-Jitsu world titles.',
+    text: 'Andrew Tackett, coached here since he was a child, holds the UFC BJJ title, alongside three Jiu-Jitsu world titles.',
     photo: '/site/home/ufc-bjj.webp',
     alt: 'Andrew Tackett with the UFC BJJ championship belt',
   },

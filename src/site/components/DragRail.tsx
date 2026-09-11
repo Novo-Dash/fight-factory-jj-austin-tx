@@ -357,7 +357,7 @@ export function DragRail({
       <div
         ref={rail}
         role="group"
-        aria-label={`${label} — drag or use the arrows`}
+        aria-label={`${label}, drag or use the arrows`}
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === 'ArrowRight') { e.preventDefault(); go(index + 1) }

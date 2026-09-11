@@ -267,7 +267,7 @@ function Record() {
           <Reveal>
             <p className="mt-1 max-w-md text-[0.97rem] leading-[1.65] text-white/60">
               Fight Factory is best known for who came out of it. A UFC BJJ champion, a world
-              champion, an undefeated MMA prospect — all coached here, from coloured belt to
+              champion, an undefeated MMA prospect, all coached here, from coloured belt to
               title.
             </p>
           </Reveal>
@@ -624,7 +624,7 @@ function TrialBand() {
                 No second copy of the string anywhere: a duplicate would put the
                 headline in the DOM twice for a crawler and a screen reader. */}
             <MaskHeading
-              text={TRIAL_HEADLINE.replace('Jiu-Jitsu—No', 'Jiu-Jitsu—\nNo')}
+              text={TRIAL_HEADLINE.replace('Jiu-Jitsu. No', 'Jiu-Jitsu.\nNo')}
               className="t-title mt-8 max-w-2xl"
             />
           </div>

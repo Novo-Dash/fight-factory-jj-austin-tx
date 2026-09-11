@@ -37,7 +37,7 @@ const FAQ = [
   },
   {
     q: 'Do you have a women-only class?',
-    a: 'Yes — Tuesday and Thursday at 12:30 PM and Saturday at 9:30 AM, all levels, coached by a No-Gi World Champion.',
+    a: 'Yes. Tuesday and Thursday at 12:30 PM and Saturday at 9:30 AM, all levels, coached by a No-Gi World Champion.',
   },
   {
     q: 'What does membership cost?',

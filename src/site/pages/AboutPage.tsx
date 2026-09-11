@@ -227,7 +227,7 @@ function Staff() {
                           ))}
                         </div>
                       ) : (
-                        <Pending>Biography pending — supplied by the academy</Pending>
+                        <Pending>Biography pending, supplied by the academy</Pending>
                       )}
                     </div>
                   </div>

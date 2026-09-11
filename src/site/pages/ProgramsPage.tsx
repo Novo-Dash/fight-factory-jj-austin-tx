@@ -196,7 +196,7 @@ export function ProgramsPage() {
       <PageHead
         tag="Programmes"
         title={'Two programmes.\nTen kinds\nof class.'}
-        standfirst="Adults from thirteen up and children from four. Gi and no-gi, beginners-only rooms, wrestling, and a women's class — all under the same coaching staff."
+        standfirst="Adults from thirteen up and children from four. Gi and no-gi, beginners-only rooms, wrestling, and a women's class, all under the same coaching staff."
       />
 
       <ProgramBlock
