@@ -87,7 +87,7 @@ export function Coach() {
 
             <div className="flex flex-col gap-3">
               {[
-                { label: 'Notable Student', value: 'Andrew Tackett — UFC BJJ Champion' },
+                { label: 'Notable Student', value: 'Andrew Tackett, UFC BJJ Champion' },
                 { label: 'Teaching Method', value: 'Unique beginner onboarding system' },
                 { label: 'Location',        value: 'Austin, TX' },
               ].map((c) => (

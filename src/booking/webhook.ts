@@ -138,7 +138,7 @@ export function sendLeadWebhook(data: BookingData): void {
 
 export function sendBookingWebhook(data: BookingData): void {
   if (!data.program || !data.date || !data.time) {
-    console.warn('[webhook] booking sem programa/data/hora — ignorado')
+    console.warn('[webhook] booking sem programa/data/hora, ignorado')
     return
   }
   const cn = childNameOrNull(data)

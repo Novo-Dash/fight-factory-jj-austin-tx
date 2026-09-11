@@ -13,7 +13,7 @@ export const testimonials: Testimonial[] = [
     id: '2',
     name: 'Laszlo S.',
     rating: 5,
-    text: 'Both me and my daughter train here. The flexible schedule makes it easy for families to attend. The instructors are patient and encouraging — perfect environment for all ages.',
+    text: 'Both me and my daughter train here. The flexible schedule makes it easy for families to attend. The instructors are patient and encouraging, perfect environment for all ages.',
     timeAgo: '3 months ago',
     avatarBg: '#34A853',
   },
