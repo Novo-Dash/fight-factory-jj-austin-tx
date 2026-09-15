@@ -11,7 +11,8 @@ export interface BookingData {
   childName?: string
   email: string
   phone: string
-  program: Program
+  /** Turma escolhida — objeto vindo AO VIVO do GHL (get_programs, §5.1). */
+  program: Program | null
   /** Data escolhida na Etapa 2 (local). */
   date: Date | null
   /** Horário escolhido na Etapa 2, em 24h "HH:MM". */

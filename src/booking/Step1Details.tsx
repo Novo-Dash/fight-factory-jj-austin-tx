@@ -1,30 +1,41 @@
 import { useEffect, useRef } from 'react'
-import {
-  KIDS_PROGRAMS,
-  PROGRAMS,
-  PROGRAM_AUDIENCE,
-  PROGRAM_HINT,
-  PROGRAM_LABEL,
-  type Program,
-} from './schedule'
+import { ACADEMY_ADDRESS, displayName, type Program } from './schedule'
 import { formatUSPhone, isStep1Valid } from './validation'
 import type { BookingData } from './types'
+import type { ProgramsState } from './BookingForm'
 
 interface Step1Props {
   data: BookingData
+  /** Turmas AO VIVO do GHL (get_programs, §5.1) — loading / error / ready. */
+  programs: ProgramsState
   onChange: (patch: Partial<BookingData>) => void
   onNext: () => void
-  /** /kids: restringe os programas visíveis aos de kids. */
+  /** /kids e /back-to-school: restringe os programas visíveis aos de kids. */
   kidsMode?: boolean
 }
 
 const inputClass =
   'w-full px-4 py-3 rounded-full text-[#0A0A0A] border border-[#D8D8D8] focus:border-[#0A0A0A] focus:outline-none transition-colors'
 
-export function Step1Details({ data, onChange, onNext, kidsMode }: Step1Props) {
+/** Dica curta abaixo do nome (só UI, nada disso vai em payload). */
+function programHint(p: Program): string {
+  const parts: string[] = []
+  if (p.duration_minutes) parts.push(`${p.duration_minutes} min`)
+  parts.push(p.audience === 'kids' ? 'Kids' : 'Adults')
+  return parts.join(' · ')
+}
+
+export function Step1Details({ data, programs, onChange, onNext, kidsMode }: Step1Props) {
   const valid = isStep1Valid(data)
-  const visiblePrograms = kidsMode ? KIDS_PROGRAMS : PROGRAMS
-  const isKids = PROGRAM_AUDIENCE[data.program] === 'kids'
+  // audience vem do GHL (grupo do calendário) — nunca recalculado pelo nome (§8.22).
+  const isKids = data.program?.audience === 'kids'
+
+  const visiblePrograms =
+    programs.status === 'ready'
+      ? kidsMode
+        ? programs.programs.filter((p) => p.audience === 'kids')
+        : programs.programs
+      : []
 
   // Quando o campo "nome da criança" aparece (troca p/ programa de kids),
   // rola até ele + foca. Só na transição para kids, não a cada render.
@@ -33,7 +44,7 @@ export function Step1Details({ data, onChange, onNext, kidsMode }: Step1Props) {
   useEffect(() => {
     if (isKids && !prevKids.current) {
       childRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      childRef.current?.focus()
+      childRef.current?.focus({ preventScroll: true })
     }
     prevKids.current = isKids
   }, [isKids])
@@ -41,6 +52,16 @@ export function Step1Details({ data, onChange, onNext, kidsMode }: Step1Props) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (valid) onNext()
+  }
+
+  function selectProgram(p: Program) {
+    onChange({
+      program: p,
+      // troca de turma zera a agenda; sair de kids descarta nome de criança antigo
+      date: null,
+      time: null,
+      ...(p.audience === 'kids' ? {} : { childName: '' }),
+    })
   }
 
   return (
@@ -113,44 +134,66 @@ export function Step1Details({ data, onChange, onNext, kidsMode }: Step1Props) {
           />
         </div>
 
-        {/* Programa — radio. Em /kids mostra só os de kids. */}
+        {/* Programa — radios a partir da lista AO VIVO do GHL (§5.1). */}
         <div>
           <span className="block text-[#666666] text-xs mb-2 uppercase tracking-wider">Program</span>
-          <div className="space-y-2.5">
-            {visiblePrograms.map((p: Program) => {
-              const checked = data.program === p
-              return (
-                <label
-                  key={p}
-                  className={[
-                    'flex items-start gap-3 p-3.5 rounded-2xl border cursor-pointer transition-colors',
-                    checked ? 'border-[#CC0000] bg-[#FFF5F5]' : 'border-[#D8D8D8] hover:border-[#0A0A0A]',
-                  ].join(' ')}
-                >
-                  <input
-                    type="radio"
-                    name="program"
-                    value={p}
-                    checked={checked}
-                    onChange={() => onChange({ program: p })}
-                    className="sr-only"
-                  />
-                  <span
+
+          {programs.status === 'loading' && (
+            // Loading ANTES de pintar — nada de lista estática (§8 item 15).
+            <div className="flex items-center justify-center gap-3 py-8" role="status">
+              <span className="w-5 h-5 rounded-full border-2 border-[#E5E5E5] border-t-[#CC0000] animate-spin" />
+              <span className="text-[#999999] text-sm">Loading programs…</span>
+            </div>
+          )}
+
+          {(programs.status === 'error' ||
+            (programs.status === 'ready' && visiblePrograms.length === 0)) && (
+            <div className="rounded-2xl border border-[#D8D8D8] p-4 text-sm text-[#666666]" role="alert">
+              We couldn't load our programs right now. Please call us at{' '}
+              <a href={`tel:+1${ACADEMY_ADDRESS.phone.replace(/\D/g, '')}`} className="text-[#CC0000] font-semibold">
+                {ACADEMY_ADDRESS.phone}
+              </a>{' '}
+              and we'll get you on the mat.
+            </div>
+          )}
+
+          {programs.status === 'ready' && visiblePrograms.length > 0 && (
+            <div className="space-y-2.5">
+              {visiblePrograms.map((p) => {
+                const checked = data.program?.calendar_id === p.calendar_id
+                return (
+                  <label
+                    key={p.calendar_id}
                     className={[
-                      'mt-0.5 w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center',
-                      checked ? 'border-[#CC0000]' : 'border-[#BBBBBB]',
+                      'flex items-start gap-3 p-3.5 rounded-2xl border cursor-pointer transition-colors',
+                      checked ? 'border-[#CC0000] bg-[#FFF5F5]' : 'border-[#D8D8D8] hover:border-[#0A0A0A]',
                     ].join(' ')}
                   >
-                    {checked && <span className="w-2 h-2 rounded-full bg-[#CC0000]" />}
-                  </span>
-                  <span>
-                    <span className="block text-[#0A0A0A] font-semibold text-sm">{PROGRAM_LABEL[p]}</span>
-                    <span className="block text-[#666666] text-xs">{PROGRAM_HINT[p]}</span>
-                  </span>
-                </label>
-              )
-            })}
-          </div>
+                    <input
+                      type="radio"
+                      name="program"
+                      value={p.calendar_id}
+                      checked={checked}
+                      onChange={() => selectProgram(p)}
+                      className="sr-only"
+                    />
+                    <span
+                      className={[
+                        'mt-0.5 w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center',
+                        checked ? 'border-[#CC0000]' : 'border-[#BBBBBB]',
+                      ].join(' ')}
+                    >
+                      {checked && <span className="w-2 h-2 rounded-full bg-[#CC0000]" />}
+                    </span>
+                    <span>
+                      <span className="block text-[#0A0A0A] font-semibold text-sm">{displayName(p)}</span>
+                      <span className="block text-[#666666] text-xs">{programHint(p)}</span>
+                    </span>
+                  </label>
+                )
+              })}
+            </div>
+          )}
         </div>
 
         {/* Nome da criança — só quando o programa é de kids. */}

@@ -1,21 +1,30 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   GADS_BOOKING,
   GADS_LEAD,
   fbqTrack,
   ga4Event,
   gtagConversion,
+  identify,
   setUserData,
 } from './analytics'
 import { Step1Details } from './Step1Details'
 import { Step2Schedule } from './Step2Schedule'
 import { formatUSPhone, isStep1Valid } from './validation'
 import { Success } from './Success'
-import { sendBookingWebhook, sendLeadWebhook, toE164 } from './webhook'
+import { fetchPrograms, sendBookingWebhook, sendLeadWebhook, toE164 } from './webhook'
 import type { BookingData } from './types'
-import { KIDS_PROGRAMS, PROGRAMS, PROGRAM_AUDIENCE } from './schedule'
+import type { Program } from './schedule'
 
 type Step = 1 | 2 | 'success'
+
+/** Estado da busca ao vivo de turmas (get_programs, §5.1). O estado inicial é
+ *  'loading' ANTES do primeiro paint — nunca pinta lista de estado antigo
+ *  (§8 item 15). Não existe lista estática de fallback. */
+export type ProgramsState =
+  | { status: 'loading' }
+  | { status: 'error' }
+  | { status: 'ready'; programs: Program[] }
 
 /** Pré-preenchimento via query string (links do GHL com merge fields). */
 function readPrefill(): Partial<BookingData> {
@@ -41,13 +50,13 @@ function readPrefill(): Partial<BookingData> {
   return out
 }
 
-function makeInitial(kidsMode?: boolean): BookingData {
+function makeInitial(): BookingData {
   return {
     name: '',
     email: '',
     phone: '',
-    // /kids abre num programa de kids; página principal abre no primeiro programa.
-    program: kidsMode ? KIDS_PROGRAMS[0] : PROGRAMS[0],
+    program: null, // a lista vem AO VIVO do GHL (§5.1); o usuário escolhe
+    childName: '',
     date: null,
     time: null,
     ...readPrefill(), // leitura única no mount; edições do usuário sempre vencem
@@ -57,6 +66,7 @@ function makeInitial(kidsMode?: boolean): BookingData {
 interface BookingFormProps {
   /** Chamado após o reset, ao concluir. No modal: fecha. No /book: undefined (fica na Etapa 1). */
   onDone?: () => void
+  /** /kids e /back-to-school: restringe as turmas visíveis às de kids. */
   kidsMode?: boolean
   /** Rótulo de origem gravado nos 2 webhooks. Omitido = landing page. */
   source?: string
@@ -64,8 +74,26 @@ interface BookingFormProps {
 
 export function BookingForm({ onDone, kidsMode, source }: BookingFormProps) {
   const [step, setStep] = useState<Step>(1)
-  const [data, setData] = useState<BookingData>(() => makeInitial(kidsMode))
+  const [data, setData] = useState<BookingData>(() => makeInitial())
+  // Loading marcado ANTES do primeiro paint (§8 item 15).
+  const [programs, setPrograms] = useState<ProgramsState>({ status: 'loading' })
   const leadSent = useRef(false) // dedupe do Webhook 1 (1x por sessão de booking)
+
+  // Busca turmas + horários AO VIVO no GHL ao montar (abrir modal / montar
+  // /book) — uma chamada só, cacheada por sessão no módulo webhook (§5.1).
+  useEffect(() => {
+    let cancelled = false
+    fetchPrograms()
+      .then((list) => {
+        if (!cancelled) setPrograms({ status: 'ready', programs: list })
+      })
+      .catch(() => {
+        if (!cancelled) setPrograms({ status: 'error' })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   function patch(p: Partial<BookingData>) {
     setData((prev) => ({ ...prev, ...p }))
@@ -76,7 +104,9 @@ export function BookingForm({ onDone, kidsMode, source }: BookingFormProps) {
     // Webhook 1 + conversões de Lead: 1x por sessão, mesmo se voltar e avançar.
     if (!leadSent.current) {
       leadSent.current = true
-      const audience = PROGRAM_AUDIENCE[data.program]
+      const audience = data.program?.audience
+      // Advanced Matching (§7.6.4): identifica ANTES dos eventos de Lead.
+      identify({ name: data.name, email: data.email, phone: data.phone })
       // Enhanced Conversions: setar antes da conversão de Lead cobre as duas da sessão.
       setUserData(data.email, toE164(data.phone))
       sendLeadWebhook(data, source) // fire-and-forget
@@ -88,8 +118,8 @@ export function BookingForm({ onDone, kidsMode, source }: BookingFormProps) {
   }
 
   function handleConfirm() {
-    if (data.date == null || data.time == null) return
-    const audience = PROGRAM_AUDIENCE[data.program]
+    if (data.program == null || data.date == null || data.time == null) return
+    const audience = data.program.audience
     fbqTrack('Schedule', { content_category: audience }) // sem value — trial é grátis
     ga4Event('trial_booked', { audience })
     gtagConversion(GADS_BOOKING)
@@ -98,7 +128,7 @@ export function BookingForm({ onDone, kidsMode, source }: BookingFormProps) {
   }
 
   function handleDone() {
-    setData(makeInitial(kidsMode))
+    setData(makeInitial())
     setStep(1)
     leadSent.current = false
     onDone?.()
@@ -108,5 +138,13 @@ export function BookingForm({ onDone, kidsMode, source }: BookingFormProps) {
   if (step === 2) {
     return <Step2Schedule data={data} onChange={patch} onBack={() => setStep(1)} onConfirm={handleConfirm} />
   }
-  return <Step1Details data={data} onChange={patch} onNext={handleNext} kidsMode={kidsMode} />
+  return (
+    <Step1Details
+      data={data}
+      programs={programs}
+      onChange={patch}
+      onNext={handleNext}
+      kidsMode={kidsMode}
+    />
+  )
 }

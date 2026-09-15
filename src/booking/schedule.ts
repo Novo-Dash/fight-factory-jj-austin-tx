@@ -1,89 +1,45 @@
 // =============================================================================
-// schedule.ts — Configuração da agenda (a parte específica da academia)
+// schedule.ts — Tipos + helpers de data/hora + exceções da academia
 // -----------------------------------------------------------------------------
 // Fight Factory Jiu Jitsu — Austin, TX (sub-account GHL 7ai3O8KqknYgJu59oYfE)
 //
-// ⚠️ REGRA-MÃE: o calendário é casado por `calendar_id` (PROGRAM_CALENDAR_ID),
-// imune a rename. O `PROGRAM_LABEL` (nome) é o rótulo do radio E o `program`
-// enviado ao CRM (Webhook 1) — mantido igual ao nome do calendário no GHL por
-// consistência, mas NÃO é o que casa o calendário no n8n.
-//
-// Os horários NÃO ficam aqui: vêm AO VIVO do GHL (free-slots via n8n, §5.1).
-// O SCHEDULE estático abaixo é só FALLBACK de erro da chamada de slots.
+// ⭐ A lista de turmas NÃO mora aqui (§5): programas E horários vêm AO VIVO do
+// GHL numa chamada só (get_programs via n8n, §5.1). Este módulo guarda apenas
+// o que o GHL não sabe — exceções por calendar_id e as constantes fixas.
+// Turma criada no GHL aparece na página sozinha, sem deploy.
 // =============================================================================
 
-// Chaves internas: ASCII, estáveis, nunca exibidas. Use para LÓGICA.
-export type Program = 'adults' | 'adults-advanced' | 'kids-7-12' | 'kids-4-6'
 export type Audience = 'adults' | 'kids'
 
-// Ordem de exibição dos radios na Etapa 1 (página principal).
-export const PROGRAMS: Program[] = ['adults', 'adults-advanced', 'kids-7-12', 'kids-4-6']
-
-// Subconjunto exibido na landing dedicada de kids (/kids).
-export const KIDS_PROGRAMS: Program[] = ['kids-7-12', 'kids-4-6']
-
-// Labels: o texto que o usuário vê no radio E o `program` enviado ao CRM.
-// Copiado LITERALMENTE dos calendários da sub-account (GET /calendars/).
-export const PROGRAM_LABEL: Record<Program, string> = {
-  adults: 'Adults Brazilian Jiu Jitsu All Levels',
-  'adults-advanced': 'Adults Advanced Jiu Jitsu',
-  'kids-7-12': 'Kids (7-12 years) Brazilian Jiu Jitsu',
-  'kids-4-6': 'Kids (4-6 Years) Brazilian Jiu Jitsu',
-}
-
-// Audience por programa: padroniza o Webhook 1 para o workflow único (§3.1).
-export const PROGRAM_AUDIENCE: Record<Program, Audience> = {
-  adults: 'adults',
-  'adults-advanced': 'adults',
-  'kids-7-12': 'kids',
-  'kids-4-6': 'kids',
-}
-
-// ID do calendário no GHL por programa. É a CHAVE que casa o calendário no n8n
-// (Webhook 2 + slots). Puxado do GHL no onboarding (GET /calendars/ traz id+nome).
-export const PROGRAM_CALENDAR_ID: Record<Program, string> = {
-  adults: 'k7wqlTV7HzXgMH7kPyeY',
-  'adults-advanced': 'Tf83WHwYS0gVV5KRUX9a',
-  'kids-7-12': '8RAr2kpFrtPo7fWq4d3Z',
-  'kids-4-6': 'C1QqynI6nU5flirq65W7',
-}
-
-// Descrição curta exibida abaixo do label no radio (apenas UI, não vai no payload).
-export const PROGRAM_HINT: Record<Program, string> = {
-  adults: 'All levels · beginners welcome',
-  'adults-advanced': 'Advanced · experienced practitioners',
-  'kids-7-12': 'Ages 7–12 · fundamentals, focus & fun',
-  'kids-4-6': 'Ages 4–6 · playful first steps',
-}
-
-// Mapa de disponibilidade: "YYYY-MM-DD" → ["HH:MM", …] (24h). É o que o GHL
-// devolve ao vivo (já convertido pelo fetchSlots) e também a forma do fallback.
+/** Disponibilidade ao vivo: "YYYY-MM-DD" → ["HH:MM", …] (hora local, 24h). */
 export type SlotMap = Record<string, string[]>
 
-// Horários por programa por dia da semana (0=Dom … 6=Sáb), 24h "HH:MM".
-// FALLBACK ESTÁTICO apenas — derivado dos open hours reais dos calendários GHL.
-//   Adults BJJ All Levels:  Seg–Qui 18:15
-//   Adults Advanced:        Seg–Qui 07:00 e 19:15
-//   Kids (7-12 years):      Seg–Qui 17:15
-//   Kids (4-6 Years):       Seg, Qua, Qui 16:30
-const SCHEDULE: Record<Program, Record<number, string[]>> = {
-  adults: {
-    0: [], 1: ['18:15'], 2: ['18:15'], 3: ['18:15'], 4: ['18:15'], 5: [], 6: [],
-  },
-  'adults-advanced': {
-    0: [], 1: ['07:00', '19:15'], 2: ['07:00', '19:15'], 3: ['07:00', '19:15'], 4: ['07:00', '19:15'], 5: [], 6: [],
-  },
-  'kids-7-12': {
-    0: [], 1: ['17:15'], 2: ['17:15'], 3: ['17:15'], 4: ['17:15'], 5: [], 6: [],
-  },
-  'kids-4-6': {
-    0: [], 1: ['16:30'], 2: [], 3: ['16:30'], 4: ['16:30'], 5: [], 6: [],
-  },
+/** Uma turma, exatamente como o n8n devolve (§5.1). Nada disso é escrito à mão. */
+export type Program = {
+  calendar_id: string // casa o calendário no Webhook 2 (imune a rename)
+  name: string // nome do calendário no GHL = `program` do Webhook 1
+  audience: Audience // vem do grupo do calendário no GHL — nunca recalcular
+  duration_minutes: number | null
+  capacity: number
+  slots: SlotMap
+  slots_error: string | null
 }
 
-export const BOOKING_RANGE_DAYS = 14 // janela de agendamento (allowBookingFor no GHL)
-export const BUFFER_HOURS = 5 // antecedência mínima — só p/ o fallback estático (ao vivo é do GHL)
-export const ACADEMY_TIMEZONE = 'America/Chicago'
+/**
+ * Exceções, e SÓ exceções. Chave = calendar_id.
+ *   label → apelido bonito, quando o nome do GHL não serve para o público
+ *   hide  → não aparece na página (ex.: 1:1, avaliação individual)
+ * Calendário sem entrada aqui entra normalmente, com o próprio nome do GHL.
+ * Começa VAZIO numa academia nova; só se preenche quando alguém pedir.
+ */
+export const PROGRAM_OVERRIDES: Record<string, { label?: string; hide?: true }> = {}
+
+/** Apelido é só visual — os webhooks levam sempre o nome cru do GHL. */
+export function displayName(p: Program): string {
+  return PROGRAM_OVERRIDES[p.calendar_id]?.label ?? p.name
+}
+
+export const BOOKING_RANGE_DAYS = 14 // janela fixa, igual para todas as academias
 
 export const ACADEMY_ADDRESS = {
   name: 'Fight Factory Jiu Jitsu',
@@ -119,7 +75,7 @@ export function getBookingWindow(): { min: Date; max: Date } {
   return { min, max: addDays(min, BOOKING_RANGE_DAYS) }
 }
 
-/** Horários do dia para a data, lendo o mapa retornado pelo GHL (ou fallback). */
+/** Horários do dia para a data, lendo o mapa que veio do GHL (§5.1). */
 export function getTimesForDay(slots: SlotMap, date: Date): string[] {
   return slots[isoDate(date)] ?? []
 }
@@ -142,27 +98,6 @@ export function getFirstBookableDate(slots: SlotMap): Date | null {
     if (isDateBookable(slots, d)) return d
   }
   return null
-}
-
-/**
- * Fallback estático (só quando a chamada de slots falha): monta um SlotMap a
- * partir do SCHEDULE para a janela atual, aplicando o BUFFER_HOURS.
- */
-export function staticFallbackSlots(program: Program): SlotMap {
-  const { min } = getBookingWindow()
-  const now = new Date()
-  const bufferMs = BUFFER_HOURS * 60 * 60 * 1000
-  const out: SlotMap = {}
-  for (let i = 0; i <= BOOKING_RANGE_DAYS; i++) {
-    const date = addDays(min, i)
-    const slots = (SCHEDULE[program]?.[date.getDay()] ?? []).filter((slot) => {
-      const [h, m] = slot.split(':').map(Number)
-      const slotDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), h, m, 0, 0)
-      return slotDate.getTime() - now.getTime() >= bufferMs
-    })
-    if (slots.length) out[isoDate(date)] = slots
-  }
-  return out
 }
 
 /**

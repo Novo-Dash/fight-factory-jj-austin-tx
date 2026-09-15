@@ -1,17 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect } from 'react'
 import { Calendar } from './Calendar'
 import {
-  PROGRAM_LABEL,
+  ACADEMY_ADDRESS,
+  displayName,
   formatDateLong,
   formatTimeLabel,
   getBookingWindow,
   getFirstBookableDate,
   getTimesForDay,
-  staticFallbackSlots,
-  type Program,
-  type SlotMap,
+  isoDate,
 } from './schedule'
-import { fetchSlots } from './webhook'
 import type { BookingData } from './types'
 
 interface Step2Props {
@@ -21,55 +19,33 @@ interface Step2Props {
   onConfirm: () => void
 }
 
-type Status = 'loading' | 'ready' | 'error'
-
 export function Step2Schedule({ data, onChange, onBack, onConfirm }: Step2Props) {
-  const program = data.program as Program
-  const [status, setStatus] = useState<Status>('loading')
-  const [slots, setSlots] = useState<SlotMap>({})
-  const preselected = useRef(false)
+  // Os horários JÁ vieram na chamada única do get_programs (§5.1) — nenhum
+  // fetch novo aqui, nenhuma segunda espera, nenhum fallback estático.
+  const slots = data.program?.slots ?? {}
+  const slotsError = data.program?.slots_error ?? null
 
-  // Busca os horários AO VIVO no GHL ao entrar na Etapa 2. O estado inicial já é
-  // 'loading' (mount fresco), então a agenda nunca pinta antes dos slots (§8
-  // item 15) — sem setState síncrono no effect. As atualizações de slots/status
-  // saem dentro dos callbacks async do fetch.
+  // Ao entrar na Etapa 2: abre no mês da primeira data agendável e pré-seleciona
+  // essa data; se o dia tiver UM único horário, ele já vem selecionado (§2).
   useEffect(() => {
-    let alive = true
-    fetchSlots(program)
-      .then((map) => {
-        if (!alive) return
-        setSlots(map)
-        setStatus('ready')
-      })
-      .catch(() => {
-        if (!alive) return
-        // Fallback: agenda estática mínima (nunca trava o usuário).
-        setSlots(staticFallbackSlots(program))
-        setStatus('error')
-      })
-    return () => {
-      alive = false
-    }
-  }, [program])
-
-  // Pré-seleciona a primeira data agendável quando os slots chegam (1x).
-  useEffect(() => {
-    if (status === 'loading' || preselected.current) return
-    preselected.current = true
-    if (!data.date) {
-      const first = getFirstBookableDate(slots)
-      if (first) onChange({ date: first, time: null })
-    }
+    if (!data.program || data.date) return
+    const first = getFirstBookableDate(slots)
+    if (!first) return
+    const times = getTimesForDay(slots, first)
+    onChange({ date: first, time: times.length === 1 ? times[0] : null })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, slots])
+  }, [data.program])
+
+  function selectDate(date: Date) {
+    const times = getTimesForDay(slots, date)
+    // Dia com horário único já vem pré-selecionado — um clique a menos (§2).
+    onChange({ date, time: times.length === 1 ? times[0] : null })
+  }
 
   const times = data.date ? getTimesForDay(slots, data.date) : []
   const canConfirm = data.date != null && data.time != null
+  const noAvailability = slotsError !== null || getFirstBookableDate(slots) === null
   const initialMonth = data.date ?? getFirstBookableDate(slots) ?? getBookingWindow().min
-
-  function selectDate(date: Date) {
-    onChange({ date, time: null }) // troca de data limpa o horário escolhido
-  }
 
   return (
     <div className="p-8">
@@ -81,7 +57,7 @@ export function Step2Schedule({ data, onChange, onBack, onConfirm }: Step2Props)
           >
             Pick a Date &amp; Time
           </div>
-          <p className="text-[#666666] text-sm">{PROGRAM_LABEL[program]}</p>
+          <p className="text-[#666666] text-sm">{data.program ? displayName(data.program) : ''}</p>
         </div>
         <button
           type="button"
@@ -92,11 +68,15 @@ export function Step2Schedule({ data, onChange, onBack, onConfirm }: Step2Props)
         </button>
       </div>
 
-      {status === 'loading' ? (
-        // Loading ANTES de desenhar a agenda — não pinta horários de estado antigo.
-        <div className="flex flex-col items-center justify-center py-16 gap-3">
-          <span className="w-6 h-6 rounded-full border-2 border-[#E5E5E5] border-t-[#CC0000] animate-spin" />
-          <span className="text-[#999999] text-sm">Loading available times…</span>
+      {noAvailability ? (
+        // Turma sem horário na janela (ou slots_error): recado com telefone —
+        // nunca uma agenda vazia sem explicação (§2 / §5.1).
+        <div className="rounded-2xl border border-[#D8D8D8] p-4 text-sm text-[#666666]" role="alert">
+          No open times in the next two weeks for this program. Please call us at{' '}
+          <a href={`tel:+1${ACADEMY_ADDRESS.phone.replace(/\D/g, '')}`} className="text-[#CC0000] font-semibold">
+            {ACADEMY_ADDRESS.phone}
+          </a>{' '}
+          and we'll find a spot for you.
         </div>
       ) : (
         <>
@@ -118,7 +98,7 @@ export function Step2Schedule({ data, onChange, onBack, onConfirm }: Step2Props)
                     const selected = data.time === t
                     return (
                       <button
-                        key={t}
+                        key={`${isoDate(data.date!)}-${t}`}
                         type="button"
                         onClick={() => onChange({ time: t })}
                         aria-pressed={selected}
