@@ -15,8 +15,25 @@ import {
   PROOF,
   VALUES,
 } from '../content/site'
-import { COACHES, HEAD_COACH, TEAM_COPY } from '../content/staff'
+import { COACHES, HEAD_COACH, SHOW_TRAINERS, TEAM_COPY } from '../content/staff'
 import { RESULTS } from '../content/record'
+
+/* ── Chapter numbers ─────────────────────────────────────────────
+   Derived, never typed by hand. With the trainers chapter off the air the
+   outline still has to read 01, 02, 03… with no gap and no repeat, and
+   turning SHOW_TRAINERS back on has to renumber on its own. */
+
+const CHAPTERS: string[] = [
+  'room',
+  'founder',
+  'values',
+  ...(SHOW_TRAINERS ? ['trainers'] : []),
+  'results',
+  'approach',
+]
+
+/** "01", "02"… in the order the chapters actually exist on the page. */
+const ch = (id: string) => String(CHAPTERS.indexOf(id) + 1).padStart(2, '0')
 
 /* ── The belt line ────────────────────────────────────────────────────────
    Rodrigo's promotions, taken from his own biography. A horizontal record
@@ -32,7 +49,7 @@ const BELTS = [
 function Founder() {
   return (
     <section className="wrap py-20 md:py-28">
-      <Chapter n="02" label="Head instructor & founder" />
+      <Chapter n={ch('founder')} label="Head instructor & founder" />
 
       <div className="mt-10 grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-16">
         <div>
@@ -112,7 +129,7 @@ function Values() {
   return (
     <section className="bg-ink text-white">
       <div className="wrap py-20 md:py-28">
-        <Chapter n="03" label="Why it’s important" invert />
+        <Chapter n={ch('values')} label="Why it’s important" invert />
         <MaskHeading text={'What the mat\ngives back'} className="t-display mt-9 text-white" />
 
         <ol className="mt-14 grid grid-cols-1 gap-x-16 lg:grid-cols-2">
@@ -144,7 +161,7 @@ function Staff() {
 
   return (
     <section className="wrap py-20 md:py-28">
-      <Chapter n="04" label="Our trainers" />
+      <Chapter n={ch('trainers')} label="Our trainers" />
 
       <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:items-start lg:gap-16">
         <MaskHeading text={'Coached by\npeople who\nstill compete'} className="t-display" />
@@ -250,7 +267,7 @@ function Results() {
     <section className="bg-shell-2">
       <div className="wrap py-20 md:py-28">
         <div className="flex flex-wrap items-end justify-between gap-8">
-          <Chapter n="05" label="This season" />
+          <Chapter n={ch('results')} label="This season" />
           <Reveal>
             <span className="label-sm flex items-center gap-2.5 text-muted">
               <Diamond className="text-red" />
@@ -296,7 +313,7 @@ function Approach() {
   return (
     <>
       <section className="wrap py-20 md:py-28">
-        <Chapter n="06" label="How we train" />
+        <Chapter n={ch('approach')} label="How we train" />
         <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-16">
           <MaskHeading text={'Self-defence,\nnot aggression'} className="t-display" />
           <div className="copy t-lead max-w-2xl">
@@ -377,7 +394,7 @@ export function AboutPage() {
       />
 
       <section className="wrap py-16 md:py-20">
-        <Chapter n="01" label="The room" />
+        <Chapter n={ch('room')} label="The room" />
         <div className="photo-row mt-10 grid h-[56vw] grid-cols-1 gap-4 sm:h-[32vw] sm:max-h-[440px] sm:grid-cols-[1.4fr_1fr]">
           <Uncover className="h-full">
             <img
@@ -404,7 +421,7 @@ export function AboutPage() {
 
       <Founder />
       <Values />
-      <Staff />
+      {SHOW_TRAINERS ? <Staff /> : null}
       <Results />
       <Approach />
     </>

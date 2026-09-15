@@ -42,6 +42,25 @@ export const ATHLETES: Athlete[] = [
   },
 ]
 
+/**
+ * A seção 02 da home ("Built on these mats") apresenta os quatro atletas
+ * abaixo com retrato e credencial. Três dos quatro saíram da academia em
+ * 09/2026 (Andrew e William Tackett mudaram para Las Vegas, Tiffany Butler
+ * parou de dar aula); só o Kody Steele segue. Decisão do Lucas em 15/09/2026:
+ * a seção sai do ar junto com o capítulo "Our trainers" da About, para não
+ * publicar rosto de quem não está mais aqui. Ver SHOW_TRAINERS em
+ * content/staff.ts, que é a mesma decisão e o mesmo prazo.
+ *
+ * ATHLETES fica aqui inteiro de propósito. Quando o material novo chegar,
+ * virar esta flag para `true` devolve a seção e renumera os capítulos da home
+ * sozinho.
+ *
+ * ⚠️ Duas coisas saem junto, porque moram dentro de <Record />: a foto
+ * full-bleed com parallax (ufc-bjj.webp, Andrew com o cinturão do UFC BJJ ao
+ * lado do Rodrigo e do William) e o único fundo escuro dessa parte da home.
+ */
+export const SHOW_ATHLETE_RECORD: boolean = false
+
 export interface Result {
   event: string
   date: string
@@ -94,6 +113,13 @@ export const TICKER = [
  * The academy's milestones. Every year here is one the academy states itself in
  * Rodrigo's biography — nothing is dated by inference. The UFC BJJ title has no
  * published date on their site, so it is marked "Now" rather than guessed.
+ *
+ * ⚠️ 15/09/2026: o Andrew Tackett mudou para Las Vegas, então o verbo desse
+ * marco saiu do presente ("holds" → "took"): o título foi conquistado treinando
+ * aqui e isso segue verdade, mas a página não afirma mais que ele é do quadro
+ * de hoje. O rótulo continua "Now" porque a data do título continua sem fonte
+ * publicada, e chutar um ano seria pior. Com o ano confirmado pelo cliente,
+ * trocar "Now" pelo ano fecha o marco.
  */
 export interface Milestone {
   year: string
@@ -135,7 +161,7 @@ export const MILESTONES: Milestone[] = [
   {
     year: 'Now',
     title: 'UFC BJJ champion',
-    text: 'Andrew Tackett, coached here since he was a child, holds the UFC BJJ title, alongside three Jiu-Jitsu world titles.',
+    text: 'Andrew Tackett, coached here since he was a child, took the UFC BJJ title, alongside three Jiu-Jitsu world titles.',
     photo: '/site/home/ufc-bjj.webp',
     alt: 'Andrew Tackett with the UFC BJJ championship belt',
   },

@@ -15,7 +15,7 @@ import {
   TRIAL_HEADLINE,
   WELCOME_COPY,
 } from '../content/site'
-import { ATHLETES, MILESTONES, TICKER } from '../content/record'
+import { ATHLETES, MILESTONES, SHOW_ATHLETE_RECORD, TICKER } from '../content/record'
 import { ADULTS, KIDS } from '../content/programs'
 import { REVIEWS, REVIEWS_COPY } from '../content/testimonials'
 
@@ -23,6 +23,22 @@ import { REVIEWS, REVIEWS_COPY } from '../content/testimonials'
    A photograph carries the whole screen, with a scrim light enough that the
    room is still legible behind the type. Headline on the left, the Google
    record on the right, sharing one baseline. */
+
+/* ── Chapter numbers ─────────────────────────────────────────────
+   Derived, never typed by hand. With the athlete record off the air the
+   outline still has to read 01, 02, 03… with no gap and no repeat, and
+   turning SHOW_ATHLETE_RECORD back on has to renumber on its own. */
+
+const CHAPTERS: string[] = [
+  'academy',
+  ...(SHOW_ATHLETE_RECORD ? ['record'] : []),
+  'programs',
+  'reviews',
+  'room',
+]
+
+/** "01", "02"… in the order the chapters actually exist on the page. */
+const ch = (id: string) => String(CHAPTERS.indexOf(id) + 1).padStart(2, '0')
 
 function Hero() {
   const { openModal } = useModal()
@@ -159,7 +175,7 @@ const STRIP = [
 function Academy() {
   return (
     <section className="wrap py-16 md:py-20">
-      <Chapter n="01" label="The academy" />
+      <Chapter n={ch('academy')} label="The academy" />
 
       <div className="mt-9 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:gap-14">
         <div className="min-w-0">
@@ -260,7 +276,7 @@ function Record() {
   return (
     <section className="relative bg-ink text-white">
       <div className="wrap py-16 md:py-20">
-        <Chapter n="02" label="The record" invert />
+        <Chapter n={ch('record')} label="The record" invert />
 
         <div className="mt-9 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:items-end lg:gap-14">
           <MaskHeading text={'Built on\nthese mats'} className="t-display text-white" />
@@ -410,7 +426,7 @@ function Programs() {
   return (
     <section className="wrap py-16 md:py-20">
       <div className="flex flex-wrap items-end justify-between gap-8">
-        <Chapter n="03" label="Programmes" />
+        <Chapter n={ch('programs')} label="Programmes" />
         <Reveal>
           <a
             href="/programs"
@@ -447,7 +463,7 @@ function Reviews() {
     <section className="bg-shell-2">
       <div className="wrap py-16 md:py-20">
         <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
-          <Chapter n="04" label="What members say" />
+          <Chapter n={ch('reviews')} label="What members say" />
           <Reveal>
             <div className="flex items-center gap-4">
               <span className="display-line text-[2.2rem] leading-none">{PROOF.googleRating}</span>
@@ -501,7 +517,7 @@ function Reviews() {
 
 const GALLERY = [
   { src: '/site/facility/mat-a.webp', cap: 'The competition mat', tall: true },
-  { src: '/site/team/staff-line.webp', cap: 'The coaching staff', tall: false },
+  { src: '/site/team/staff-line.webp', cap: 'After training', tall: false },
   { src: '/site/rail/ceremony.webp', cap: 'Belt ceremony', tall: true },
   { src: '/site/facility/pro-shop.webp', cap: 'The pro shop', tall: false },
   { src: '/site/rail/backlit.webp', cap: 'Before the round', tall: true },
@@ -515,7 +531,7 @@ function Room() {
   return (
     <section className="py-16 md:py-20">
       <div className="wrap">
-        <Chapter n="05" label="Inside the Fight Factory" />
+        <Chapter n={ch('room')} label="Inside the Fight Factory" />
         <div className="mt-9 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:items-end lg:gap-14">
           <MaskHeading text={'Where champions\nare made'} className="t-display" />
           <Reveal>
@@ -691,7 +707,7 @@ export function HomePage() {
         <Marquee items={TICKER} invert duration={52} />
       </div>
       <Academy />
-      <Record />
+      {SHOW_ATHLETE_RECORD ? <Record /> : null}
       <Programs />
       <Reviews />
       <Room />

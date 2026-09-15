@@ -6,6 +6,32 @@
 // the record shown on the About page is the academy's own claim, not ours.
 // ═══════════════════════════════════════════════════════════════════════════
 
+/**
+ * O quadro de instrutores mudou (cliente, 15/09/2026). Saíram:
+ *
+ *   · Tiffany Butler  — parou de treinar e de dar aula
+ *   · William Tackett — mudou para Las Vegas
+ *   · Andrew Tackett  — mudou para Las Vegas
+ *   · Corey           — saiu (nunca esteve nesta lista, entrou depois do site)
+ *
+ * O cliente aprovou o site e quer publicar já, com este capítulo oculto até as
+ * fotos e as bios novas chegarem: ele contratou fotógrafo e o material vem
+ * nesta semana de 15/09/2026. É uma ocultação de dias, não de mês.
+ *
+ * O capítulo sai INTEIRO, e não só os quatro que saíram: com metade da lista
+ * vencida a seção não se sustenta, e o material novo chega junto de todo modo.
+ *
+ * O conteúdo antigo continua aqui de propósito. Quando as bios novas chegarem,
+ * o trabalho é substituir COACHES e virar esta flag para `true`. A numeração
+ * dos capítulos da About é derivada dela, então ligar e desligar não deixa
+ * buraco nem número repetido na sequência.
+ *
+ * O Rodrigo (HEAD_COACH) não faz parte da troca: ele é o fundador e segue na
+ * página, no capítulo dele. Kody Steele, Davis Cole e Caleb Tackett também
+ * seguem na academia; só estão esperando a mesma leva de fotos.
+ */
+export const SHOW_TRAINERS: boolean = false
+
 export interface Coach {
   slug: string
   name: string
