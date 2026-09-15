@@ -72,7 +72,7 @@ export default async function handler(
   const accessToken = process.env.META_CAPI_ACCESS_TOKEN
   if (!accessToken) {
     console.warn('capi: META_CAPI_ACCESS_TOKEN is not configured, event dropped')
-    res.status(200).json({ ok: false })
+    res.status(200).json({ ok: false, meta: 'no_token' })
     return
   }
 
@@ -102,7 +102,13 @@ export default async function handler(
     payload.test_event_code = process.env.META_TEST_EVENT_CODE
   }
 
-  /* A Meta failure must never become an LP error — log and answer ok anyway. */
+  /* A Meta failure must never become an LP error — log and answer ok anyway.
+     But `ok` alone used to mean three different things: Meta accepted, Meta
+     rejected, or the request never arrived. A dead mirror was indistinguishable
+     from a live one, and Vercel runtime logs cannot be read after the fact, so
+     the outcome has to travel in the RESPONSE. The client ignores the body, so
+     nothing in the funnel changes. */
+  let outcome: 'accepted' | 'rejected' | 'unreachable' = 'accepted'
   try {
     const response = await fetch(`${GRAPH_URL}?access_token=${accessToken}`, {
       method: 'POST',
@@ -110,11 +116,13 @@ export default async function handler(
       body: JSON.stringify(payload),
     })
     if (!response.ok) {
+      outcome = 'rejected'
       console.error('capi: Meta rejected event', body.event, await response.text())
     }
   } catch (err) {
+    outcome = 'unreachable'
     console.error('capi: request to Meta failed', err)
   }
 
-  res.status(200).json({ ok: true })
+  res.status(200).json({ ok: true, meta: outcome })
 }
