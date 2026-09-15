@@ -287,3 +287,40 @@ W=390 node shot.mjs "/home"
 
 `shot.mjs` fails the run if any page scrolls sideways, leaves a reveal at zero
 opacity, has more or fewer than one `h1`, or requests something that 404s.
+
+## ⚠️ The domain cutover needs one change, and it is not DNS
+
+Found on 15/09/2026, while trying to serve the institutional home at the root
+of a review domain.
+
+**The conditional rewrite that maps `/` to `home.html` never runs.** Vercel
+applies headers, then redirects, then the **filesystem**, and only then
+rewrites. `/` matches `index.html` on the filesystem, so the rewrite list is
+never consulted for it. Anchors in the host pattern make no difference; the
+rule is simply unreachable. `/about` works because no file matches that path.
+
+That was proven on a deploy, not reasoned about: `/about` rewrites correctly
+and `/` does not, on the same deploy, with and without anchors.
+
+**What it means for the cutover.** The plan recorded so far was "attach
+fightfactoryjiujitsu.com and www, zero code". That would put the paid-traffic
+LANDING PAGE at the root of the client's own domain, with the institutional
+site reachable only at /home. The pages themselves are fine; the root is not.
+
+**The fix, when it is decided:** stop having a file at the root. Rename the
+landing page entry from `index.html` to `lp.html`, then let rewrites do the
+routing, catch-all last:
+
+```
+/          host lp.fightfactoryjiujitsu.com   ->  /lp.html
+/          host (www.)?fightfactoryjiujitsu.com -> /home.html
+/(.*)                                         ->  /lp.html
+```
+
+⚠️ It touches the surface that is live and carrying ad spend, so it wants its
+own round with the campaign routes (`/kids`, `/back-to-school`) checked on the
+`lp.` host afterwards. It is not a change to slip in beside a content update.
+
+Until then, the institutional home is at **/home** on every host, which is
+what the review link uses.
+
