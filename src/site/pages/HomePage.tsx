@@ -18,6 +18,13 @@ import {
 import { ATHLETES, MILESTONES, SHOW_ATHLETE_RECORD, TICKER } from '../content/record'
 import { ADULTS, KIDS } from '../content/programs'
 import { REVIEWS, REVIEWS_COPY } from '../content/testimonials'
+/* Straight from ./types, never from the blog's index: importing anything
+   through that index evaluates its `import.meta.glob`, which pulls every post
+   body into this page's bundle. Measured: 29 KB of posts arriving on the home
+   page to render three cards. */
+import { CATEGORIES } from '../content/blog/types'
+import { LATEST } from '../content/blog/latest.generated'
+import { formatDateShort } from '../lib/date'
 
 /* ── Hero ──────────────────────────────────────────────────────────────────
    A photograph carries the whole screen, with a scrim light enough that the
@@ -33,6 +40,7 @@ const CHAPTERS: string[] = [
   'academy',
   ...(SHOW_ATHLETE_RECORD ? ['record'] : []),
   'programs',
+  'blog',
   'reviews',
   'room',
 ]
@@ -454,6 +462,118 @@ function Programs() {
   )
 }
 
+/* ── Latest from the blog ──────────────────────────────────────
+   Four posts, and it sits in ink on purpose.
+
+   Two jobs at once. It shows the academy is alive, which a competition result
+   proves better than any claim on a page. And it puts the dark ground back in
+   this stretch of the home page: the athlete record that used to hold it is
+   off the air until the new portraits arrive, which had left four pale
+   sections in a row between the hero and the red band.
+
+   The newest post gets the picture. The three behind it are record rows, the
+   device the rest of the site uses for a list that has to stay scannable, so
+   this is not a third grid of equal cards. */
+
+function Latest() {
+  /* Metadata only, from the generated module. Reading the real post list here
+     would bundle every post body into the page most visitors land on. */
+  const [lead, ...rest] = LATEST.slice(0, 4)
+  if (!lead) return null
+
+  return (
+    <section className="bg-ink text-white">
+      <div className="wrap py-16 md:py-20">
+        <div className="flex flex-wrap items-end justify-between gap-8">
+          <Chapter n={ch('blog')} label="Latest" invert />
+          <Reveal>
+            <a
+              href="/blog"
+              className="label inline-flex items-center gap-2.5 text-white underline decoration-white/30 decoration-1 underline-offset-[6px] transition-colors hover:decoration-red"
+            >
+              All posts
+              <Icon name="arrow" size={16} />
+            </a>
+          </Reveal>
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] lg:items-end lg:gap-14">
+          <MaskHeading text={'Lately on\nthe mat'} className="t-display text-white" />
+          <Reveal>
+            <p className="mb-1 text-[0.95rem] leading-[1.6] text-white/60">
+              Competition results and what is going on in the academy, updated as it happens.
+            </p>
+          </Reveal>
+        </div>
+
+        <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-14">
+          <Reveal>
+            <a href={`/blog/${lead.slug}`} className="group block">
+              <div className="overflow-hidden bg-ink-2">
+                <img
+                  src={lead.cover.src}
+                  alt={lead.cover.alt}
+                  width={lead.cover.w}
+                  height={lead.cover.h}
+                  loading="lazy"
+                  style={{ objectPosition: lead.cover.focus ?? '50% 35%' }}
+                  className="aspect-[16/10] w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+                />
+              </div>
+              <span className="label-sm nums mt-5 flex items-center gap-2.5 text-white/50">
+                <span className="text-red">{CATEGORIES[lead.category]}</span>
+                <Diamond className="text-white/25" />
+                <time dateTime={lead.date}>{formatDateShort(lead.date)}</time>
+              </span>
+              <h3 className="display-line mt-3.5 text-[1.24rem] text-white transition-colors duration-200 group-hover:text-red md:text-[1.4rem]">
+                {lead.title}
+              </h3>
+              <p className="mt-3 max-w-lg text-[0.95rem] leading-[1.6] text-white/60">
+                {lead.excerpt}
+              </p>
+            </a>
+          </Reveal>
+
+          <ul className="flex flex-col justify-between gap-2">
+            {rest.map((post, i) => (
+              <Reveal as="li" key={post.slug} delay={i * 70} className="flex-1">
+                <a
+                  href={`/blog/${post.slug}`}
+                  className="record-row record-row-invert group flex h-full items-center"
+                >
+                  <div className="flex w-full items-center gap-5">
+                    <div className="w-[104px] shrink-0 overflow-hidden bg-ink-2 sm:w-[128px]">
+                      <img
+                        src={post.cover.src}
+                        alt={post.cover.alt}
+                        width={post.cover.w}
+                        height={post.cover.h}
+                        loading="lazy"
+                        style={{ objectPosition: post.cover.focus ?? '50% 35%' }}
+                        className="aspect-[4/3] w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className="label-sm nums flex flex-wrap items-center gap-2.5 text-white/45">
+                        <span className="text-red">{CATEGORIES[post.category]}</span>
+                        <Diamond className="text-white/25" />
+                        <time dateTime={post.date}>{formatDateShort(post.date)}</time>
+                      </span>
+                      <h3 className="display-line mt-2.5 text-[1.02rem] text-white transition-colors duration-200 group-hover:text-red">
+                        {post.title}
+                      </h3>
+                    </div>
+                  </div>
+                </a>
+              </Reveal>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 /* ── 04 · Reviews ─────────────────────────────────────────────────────────
    The academy's own published Google reviews, in full, on a shallower card so
    the section costs one screen instead of two. */
@@ -709,6 +829,7 @@ export function HomePage() {
       <Academy />
       {SHOW_ATHLETE_RECORD ? <Record /> : null}
       <Programs />
+      <Latest />
       <Reviews />
       <Room />
       <TrialBand />

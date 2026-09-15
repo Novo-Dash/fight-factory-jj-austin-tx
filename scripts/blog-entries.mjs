@@ -251,7 +251,52 @@ export async function buildBlogEntries() {
   }
 
   await writeSitemap(posts)
+  await writeLatest(posts)
   return { input, posts }
+}
+
+/**
+ * A module holding just the metadata of the most recent posts.
+ *
+ * The home page shows three of them. Reading the real post list there would
+ * pull every post body into the bundle of the page most visitors land on, and
+ * that grows by a post every couple of weeks: measured at 29 KB for the first
+ * seventeen, to render three cards. This file is about 2 KB and does not grow.
+ *
+ * It is committed rather than ignored, because `tsc -b` runs before Vite and
+ * would fail on a missing import. Every build rewrites it, so the committed
+ * copy cannot go stale in the output: the bundle always uses what was written
+ * here moments earlier. The diff is also a readable record of what shipped.
+ */
+async function writeLatest(posts, count = 6) {
+  const summaries = posts.slice(0, count).map((post) => ({
+    slug: post.slug,
+    title: post.title,
+    date: post.date,
+    category: post.category,
+    excerpt: post.excerpt,
+    cover: post.cover,
+  }))
+
+  const body = JSON.stringify(summaries, null, 2)
+    .split('\n')
+    .map((line, i) => (i === 0 ? line : '  ' + line))
+    .join('\n')
+
+  await writeFile(
+    join(ROOT, 'src/site/content/blog/latest.generated.ts'),
+    `// GENERATED FILE, DO NOT EDIT.
+//
+// Written by scripts/blog-entries.mjs on every build, from the post files in
+// ./posts. It carries the newest ${count} posts without their bodies, so a page
+// that only lists posts does not have to bundle all of them. See writeLatest()
+// in that script for why it is committed instead of ignored.
+
+import type { PostSummary } from './types'
+
+export const LATEST: PostSummary[] = ${body}
+`,
+  )
 }
 
 /**

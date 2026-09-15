@@ -15,6 +15,15 @@
 // `[text](https://url)`. `PostBody` parses it into React elements.
 // ═══════════════════════════════════════════════════════════════════════════
 
+/**
+ * A post without its body: everything needed to list or link one.
+ *
+ * This is what the home page reads. Importing the full posts there would pull
+ * every body into the landing surface's bundle to render three cards, and that
+ * cost grows with every post published.
+ */
+export type PostSummary = Omit<Post, 'body' | 'draft'>
+
 /** The three kinds of post. Adding one means adding it here and in CATEGORIES. */
 export type Category = 'competition' | 'academy' | 'guide'
 
