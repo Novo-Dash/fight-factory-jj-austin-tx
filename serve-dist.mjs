@@ -31,9 +31,29 @@ const TYPES = {
   '.txt': 'text/plain; charset=utf-8',
 }
 
+/**
+ * Vercel's `:param` placeholders, turned into a real regexp and back.
+ * Without this the blog rules read as literal text here, every post falls to
+ * the SPA catch-all, and a local check would show the landing page where
+ * production correctly shows the post. A rehearsal that lies is worse than no
+ * rehearsal.
+ */
+function compileRewrite(source, destination) {
+  const names = []
+  const pattern = source.replace(/:([A-Za-z_][A-Za-z0-9_]*)/g, (_, name) => {
+    names.push(name)
+    return '([^/]+)'
+  })
+  const target = names.reduce(
+    (acc, name, i) => acc.split(`:${name}`).join(`$${i + 1}`),
+    destination,
+  )
+  return { re: new RegExp(`^${pattern}$`), target }
+}
+
 function resolveRewrite(pathname, host) {
   for (const r of conf.rewrites ?? []) {
-    const re = new RegExp(`^${r.source}$`)
+    const { re, target } = compileRewrite(r.source, r.destination)
     if (!re.test(pathname)) continue
     if (r.has?.length) {
       const ok = r.has.every((h) => {
@@ -42,7 +62,7 @@ function resolveRewrite(pathname, host) {
       })
       if (!ok) continue
     }
-    return pathname.replace(re, r.destination)
+    return pathname.replace(re, target)
   }
   return pathname
 }

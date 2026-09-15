@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+
+# Blog documents are generated from src/site/content/blog/posts at build time.
+/blog/

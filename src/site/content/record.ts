@@ -115,11 +115,15 @@ export const TICKER = [
  * published date on their site, so it is marked "Now" rather than guessed.
  *
  * ⚠️ 15/09/2026: o Andrew Tackett mudou para Las Vegas, então o verbo desse
- * marco saiu do presente ("holds" → "took"): o título foi conquistado treinando
- * aqui e isso segue verdade, mas a página não afirma mais que ele é do quadro
- * de hoje. O rótulo continua "Now" porque a data do título continua sem fonte
- * publicada, e chutar um ano seria pior. Com o ano confirmado pelo cliente,
- * trocar "Now" pelo ano fecha o marco.
+ * marco saiu do presente. O título foi conquistado treinando aqui e isso segue
+ * verdade; a página só não afirma mais que ele é do quadro de hoje.
+ *
+ * O rótulo era "Now" por falta de data publicada. A fonte apareceu no próprio
+ * blog do cliente: o post de 18/12/2025 conta que ele **defendeu** o cinturão
+ * no UFC BJJ 4, no UFC APEX, em **11/12/2025**. Daí o ano 2025 e o verbo
+ * "defended", que é o que a fonte diz. A data em que ele CONQUISTOU o título
+ * continua sem fonte, e por isso não está escrita em lugar nenhum.
+ * Ver src/site/content/blog/posts/2025-12-18-andrew-tackett-ufc-bjj-4.ts.
  */
 export interface Milestone {
   year: string
@@ -159,9 +163,9 @@ export const MILESTONES: Milestone[] = [
     alt: 'William Tackett in his black gi',
   },
   {
-    year: 'Now',
+    year: '2025',
     title: 'UFC BJJ champion',
-    text: 'Andrew Tackett, coached here since he was a child, took the UFC BJJ title, alongside three Jiu-Jitsu world titles.',
+    text: 'Andrew Tackett, coached here since he was a child, defended the UFC BJJ Welterweight title at the UFC APEX, alongside three Jiu-Jitsu world titles.',
     photo: '/site/home/ufc-bjj.webp',
     alt: 'Andrew Tackett with the UFC BJJ championship belt',
   },

@@ -23,6 +23,9 @@
     { "source": "/schedule", "destination": "/schedule.html" },
     { "source": "/contact", "destination": "/contact.html" },
 
+    { "source": "/blog", "destination": "/blog/index.html" },
+    { "source": "/blog/:slug", "destination": "/blog/:slug/index.html" },
+
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

@@ -581,6 +581,28 @@
   animation-direction: var(--band-direction, normal);
 }
 
+/* ══ Blog ════════════════════════════════════════════════════════════════ */
+
+/* The reading measure. 68 characters is the width the body copy was scaled
+   for; past roughly 75 the eye loses the start of the next line. `ch` rather
+   than a pixel width so it tracks the type scale instead of fighting it. */
+@utility post-measure {
+  width: 100%;
+  max-width: 68ch;
+}
+
+/* A link inside post copy. Underlined from the start, because a link that only
+   announces itself on hover is invisible to anyone reading on a phone. */
+@utility post-link {
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--color-red);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition: color 0.2s var(--ease-out-quint);
+  &:hover { color: var(--color-red); }
+}
+
 /* ══ Long-form article body (bios rendered from content files) ════════════ */
 .copy > * + * { margin-top: 1.05em; }
 .copy p { color: var(--color-body); }
