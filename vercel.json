@@ -14,10 +14,7 @@
     {
       "source": "/",
       "has": [
-        {
-          "type": "host",
-          "value": "^(www\\.)?fightfactoryjiujitsu\\.com$|^fightfactory-jj\\.vercel\\.app$"
-        }
+        { "type": "host", "value": "fightfactory-jj\\.vercel\\.app" }
       ],
       "destination": "/home.html"
     },
