@@ -13,9 +13,7 @@
   "rewrites": [
     {
       "source": "/",
-      "has": [
-        { "type": "host", "value": "fightfactory-jj\\.vercel\\.app" }
-      ],
+      "has": [{ "type": "host", "value": "(www\\.)?fightfactoryjiujitsu\\.com" }],
       "destination": "/home.html"
     },
 
