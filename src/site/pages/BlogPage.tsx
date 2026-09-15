@@ -7,6 +7,7 @@ import { Icon } from '../components/Icon'
 import { CATEGORIES, allPosts, usedCategories, type Category, type Post } from '../content/blog'
 import { formatDate } from '../lib/date'
 import { coverStyle } from '../lib/cover'
+import { clampWords } from '../lib/text'
 
 /* ── The index ────────────────────────────────────────────────────────────
    A blog index is a list, so it is built as one rather than as a wall of
@@ -102,7 +103,7 @@ function Card({ post }: { post: Post }) {
         <h3 className="display-line mt-3.5 text-[1.12rem] text-ink transition-colors duration-200 group-hover:text-red md:text-[1.24rem]">
           {post.title}
         </h3>
-        <p className="t-body mt-3 text-body">{post.excerpt}</p>
+        <p className="t-body mt-3 text-body">{clampWords(post.excerpt, 132)}</p>
       </div>
     </a>
   )

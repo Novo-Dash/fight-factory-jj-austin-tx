@@ -25,6 +25,7 @@ import { REVIEWS, REVIEWS_COPY } from '../content/testimonials'
 import { CATEGORIES } from '../content/blog/types'
 import { LATEST } from '../content/blog/latest.generated'
 import { formatDateShort } from '../lib/date'
+import { clampWords } from '../lib/text'
 
 /* ── Hero ──────────────────────────────────────────────────────────────────
    A photograph carries the whole screen, with a scrim light enough that the
@@ -506,7 +507,7 @@ function Latest() {
           </Reveal>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-14">
+        <div className="mt-12 grid grid-cols-1 items-start gap-10 xl:grid-cols-2 xl:gap-14">
           <Reveal>
             <a href={`/blog/${lead.slug}`} className="group block">
               <div className="overflow-hidden bg-ink-2">
@@ -534,15 +535,28 @@ function Latest() {
             </a>
           </Reveal>
 
-          <ul className="flex flex-col justify-between gap-2">
+          <ul className="flex flex-col">
             {rest.map((post, i) => (
-              <Reveal as="li" key={post.slug} delay={i * 70} className="flex-1">
+              <Reveal as="li" key={post.slug} delay={i * 70}>
+                {/* The fourth post is desktop only. Measured on a phone the
+                    section ran to 2071px, a fifth of the whole page and nearly
+                    double its neighbours; three posts and the link to the index
+                    say the same thing in the space the rest of the page uses.
+                    The class sits on the anchor, not on the list item, so the
+                    item is still collected by the page's reveal observer on
+                    mount and cannot end up stranded at zero opacity. */}
                 <a
                   href={`/blog/${post.slug}`}
-                  className="record-row record-row-invert group flex h-full items-center"
+                  className={`record-row record-row-invert group ${
+                    i === 2 ? 'hidden sm:block' : 'block'
+                  }`}
                 >
-                  <div className="flex w-full items-center gap-5">
-                    <div className="w-[104px] shrink-0 overflow-hidden bg-ink-2 sm:w-[128px]">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
+                    {/* Sized against the column, not guessed: at 1440 the
+                        right column is 578px wide, so 208px of picture leaves
+                        the title a comfortable measure beside it. Below sm the
+                        row stacks and the picture takes the full width. */}
+                    <div className="w-full shrink-0 overflow-hidden bg-ink-2 sm:w-[240px] xl:w-[208px]">
                       <img
                         src={post.cover.src}
                         alt={post.cover.alt}
@@ -559,9 +573,12 @@ function Latest() {
                         <Diamond className="text-white/25" />
                         <time dateTime={post.date}>{formatDateShort(post.date)}</time>
                       </span>
-                      <h3 className="display-line mt-2.5 text-[1.02rem] text-white transition-colors duration-200 group-hover:text-red">
+                      <h3 className="display-line mt-3 text-[1.06rem] text-white transition-colors duration-200 group-hover:text-red md:text-[1.15rem]">
                         {post.title}
                       </h3>
+                      <p className="mt-2.5 text-[0.88rem] leading-[1.55] text-white/55">
+                        {clampWords(post.excerpt, 104)}
+                      </p>
                     </div>
                   </div>
                 </a>

@@ -28,3 +28,12 @@ export function coverStyle(cover: Cover): React.CSSProperties {
     ...(cover.focus ? { objectPosition: cover.focus } : {}),
   }
 }
+
+/* ── Why the index does NOT use one ratio per grid row ────────────────────
+   Tried and measured, and it lost. Giving both cards in a row the same ratio
+   lines their text up, which reads better, but it crops every cover to fit:
+   34% off the Houston Open card and 46% off the team panorama. Several covers
+   are collages the academy assembled at a chosen shape, and a collage cut
+   down by a third is a mangled collage. Text starting a few pixels apart is a
+   smaller cost than that, so each cover keeps its own proportions and the
+   text rhythm is evened out by trimming the excerpts instead. */
