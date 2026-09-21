@@ -1,31 +1,43 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "headers": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
-      ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/",
-      "has": [{ "type": "host", "value": "(www\\.)?fightfactoryjiujitsu\\.com" }],
-      "destination": "/home.html"
+      "src": "/(.*)",
+      "headers": {
+        "X-Frame-Options": "DENY",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
+      },
+      "continue": true
     },
 
-    { "source": "/home", "destination": "/home.html" },
-    { "source": "/about", "destination": "/about.html" },
-    { "source": "/programs", "destination": "/programs.html" },
-    { "source": "/schedule", "destination": "/schedule.html" },
-    { "source": "/contact", "destination": "/contact.html" },
+    {
+      "src": "/",
+      "has": [{ "type": "host", "value": "^fightfactoryjiujitsu\\.vercel\\.app$" }],
+      "dest": "/home.html"
+    },
+    {
+      "src": "/",
+      "has": [{ "type": "host", "value": "^fightfactory-jj\\.vercel\\.app$" }],
+      "dest": "/home.html"
+    },
+    {
+      "src": "/",
+      "has": [{ "type": "host", "value": "^(www\\.)?fightfactoryjiujitsu\\.com$" }],
+      "dest": "/home.html"
+    },
 
-    { "source": "/blog", "destination": "/blog/index.html" },
-    { "source": "/blog/:slug", "destination": "/blog/:slug/index.html" },
+    { "handle": "filesystem" },
 
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "src": "/home/?", "dest": "/home.html" },
+    { "src": "/about/?", "dest": "/about.html" },
+    { "src": "/programs/?", "dest": "/programs.html" },
+    { "src": "/schedule/?", "dest": "/schedule.html" },
+    { "src": "/contact/?", "dest": "/contact.html" },
+
+    { "src": "/blog/?", "dest": "/blog/index.html" },
+    { "src": "/blog/([^/]+)/?", "dest": "/blog/$1/index.html" },
+
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

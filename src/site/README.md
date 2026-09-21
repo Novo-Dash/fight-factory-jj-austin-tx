@@ -288,39 +288,46 @@ W=390 node shot.mjs "/home"
 `shot.mjs` fails the run if any page scrolls sideways, leaves a reveal at zero
 opacity, has more or fewer than one `h1`, or requests something that 404s.
 
-## ⚠️ The domain cutover needs one change, and it is not DNS
+## The root is routed by host, before the filesystem
 
-Found on 15/09/2026, while trying to serve the institutional home at the root
-of a review domain.
+Found on 15/09/2026, fixed on 21/09/2026.
 
-**The conditional rewrite that maps `/` to `home.html` never runs.** Vercel
-applies headers, then redirects, then the **filesystem**, and only then
-rewrites. `/` matches `index.html` on the filesystem, so the rewrite list is
-never consulted for it. Anchors in the host pattern make no difference; the
-rule is simply unreachable. `/about` works because no file matches that path.
+**A conditional `rewrite` on `/` never runs.** Vercel applies headers, then
+redirects, then the **filesystem**, and only then rewrites. `/` matches
+`index.html` on the filesystem, so the rewrite list is never consulted for it.
+Anchors in the host pattern make no difference; the rule is simply unreachable.
+`/about` works because no file matches that path. That was proven on a deploy,
+not reasoned about: on the same deploy, `/about` rewrote and `/` did not.
 
-That was proven on a deploy, not reasoned about: `/about` rewrites correctly
-and `/` does not, on the same deploy, with and without anchors.
-
-**What it means for the cutover.** The plan recorded so far was "attach
-fightfactoryjiujitsu.com and www, zero code". That would put the paid-traffic
-LANDING PAGE at the root of the client's own domain, with the institutional
-site reachable only at /home. The pages themselves are fine; the root is not.
-
-**The fix, when it is decided:** stop having a file at the root. Rename the
-landing page entry from `index.html` to `lp.html`, then let rewrites do the
-routing, catch-all last:
+**What works is the legacy `routes` array**, because its rules run BEFORE
+`handle: filesystem`. `vercel.json` now routes the root by host:
 
 ```
-/          host lp.fightfactoryjiujitsu.com   ->  /lp.html
-/          host (www.)?fightfactoryjiujitsu.com -> /home.html
-/(.*)                                         ->  /lp.html
+/                     host fightfactoryjiujitsu.vercel.app   ->  /home.html
+/                     host fightfactory-jj.vercel.app        ->  /home.html
+/                     host (www.)?fightfactoryjiujitsu.com   ->  /home.html
+handle: filesystem
+/home /about /programs /schedule /contact                    ->  the .html file
+/blog, /blog/:slug                                           ->  the generated index.html
+/(.*)                                                        ->  /index.html
 ```
 
-⚠️ It touches the surface that is live and carrying ad spend, so it wants its
-own round with the campaign routes (`/kids`, `/back-to-school`) checked on the
-`lp.` host afterwards. It is not a change to slip in beside a content update.
+Every host pattern is anchored at both ends on purpose, so that
+`lp.fightfactoryjiujitsu.com` does NOT match and keeps serving the landing page
+at its root, along with `/kids` and `/back-to-school` through the catch-all.
 
-Until then, the institutional home is at **/home** on every host, which is
-what the review link uses.
+⚠️ **`routes` turns off `rewrites`, `redirects`, `headers`, `cleanUrls` and
+`trailingSlash`.** Anything added later has to be written as a route. The three
+security headers are the first rule, carrying `continue: true` so that matching
+them does not end the chain.
 
+⭐ `handle: filesystem` still covers the serverless functions (`/api/capi`) and
+the static assets, which is why the catch-all below it does not swallow them.
+
+**The cutover is now DNS only.** Attaching `fightfactoryjiujitsu.com` and `www`
+to the project points the apex at the institutional home, with no further code
+change, because the rule for that host is already in the list above. The
+landing page keeps `lp.` to itself.
+
+**Review URL: https://fightfactoryjiujitsu.vercel.app** (bound to this branch,
+serves its latest deploy). `fightfactory-jj.vercel.app` still works as well.
