@@ -35,10 +35,13 @@ export const SITE_URL = 'https://www.fightfactoryjiujitsu.com'
 export const SITE_SOURCE = 'Website - Institutional'
 
 // ── Navigation ────────────────────────────────────────────────────────────
-export const HOME_HREF = '/home'
+/** The home lives at the ROOT of the site's own host, which is what the
+ *  canonical tag and the sitemap already declare. `/home` stays routed for
+ *  the links shared before the root was routed by host. */
+export const HOME_HREF = '/'
 
 export const NAV = [
-  { label: 'Home', href: '/home' },
+  { label: 'Home', href: HOME_HREF },
   { label: 'About', href: '/about' },
   { label: 'Programs', href: '/programs' },
   { label: 'Schedule', href: '/schedule' },
