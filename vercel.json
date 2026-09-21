@@ -10,34 +10,60 @@
       },
       "continue": true
     },
-
     {
       "src": "/",
-      "has": [{ "type": "host", "value": "^fightfactoryjiujitsu\\.vercel\\.app$" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "^fightfactory-jj\\.vercel\\.app$"
+        }
+      ],
       "dest": "/home.html"
     },
     {
       "src": "/",
-      "has": [{ "type": "host", "value": "^fightfactory-jj\\.vercel\\.app$" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "^site\\.fightfactoryjiujitsu\\.com$"
+        }
+      ],
       "dest": "/home.html"
     },
     {
-      "src": "/",
-      "has": [{ "type": "host", "value": "^(www\\.)?fightfactoryjiujitsu\\.com$" }],
+      "handle": "filesystem"
+    },
+    {
+      "src": "/home/?",
       "dest": "/home.html"
     },
-
-    { "handle": "filesystem" },
-
-    { "src": "/home/?", "dest": "/home.html" },
-    { "src": "/about/?", "dest": "/about.html" },
-    { "src": "/programs/?", "dest": "/programs.html" },
-    { "src": "/schedule/?", "dest": "/schedule.html" },
-    { "src": "/contact/?", "dest": "/contact.html" },
-
-    { "src": "/blog/?", "dest": "/blog/index.html" },
-    { "src": "/blog/([^/]+)/?", "dest": "/blog/$1/index.html" },
-
-    { "src": "/(.*)", "dest": "/index.html" }
+    {
+      "src": "/about/?",
+      "dest": "/about.html"
+    },
+    {
+      "src": "/programs/?",
+      "dest": "/programs.html"
+    },
+    {
+      "src": "/schedule/?",
+      "dest": "/schedule.html"
+    },
+    {
+      "src": "/contact/?",
+      "dest": "/contact.html"
+    },
+    {
+      "src": "/blog/?",
+      "dest": "/blog/index.html"
+    },
+    {
+      "src": "/blog/([^/]+)/?",
+      "dest": "/blog/$1/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
   ]
 }

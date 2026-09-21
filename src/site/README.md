@@ -300,21 +300,19 @@ Anchors in the host pattern make no difference; the rule is simply unreachable.
 not reasoned about: on the same deploy, `/about` rewrote and `/` did not.
 
 **What works is the legacy `routes` array**, because its rules run BEFORE
-`handle: filesystem`. `vercel.json` now routes the root by host:
+`handle: filesystem`. `vercel.json` routes the root by host:
 
 ```
-/                     host fightfactoryjiujitsu.vercel.app   ->  /home.html
-/                     host fightfactory-jj.vercel.app        ->  /home.html
-/                     host (www.)?fightfactoryjiujitsu.com   ->  /home.html
+/                     host site.fightfactoryjiujitsu.com   ->  /home.html
+/                     host fightfactory-jj.vercel.app      ->  /home.html
 handle: filesystem
-/home /about /programs /schedule /contact                    ->  the .html file
-/blog, /blog/:slug                                           ->  the generated index.html
-/(.*)                                                        ->  /index.html
+/home /about /programs /schedule /contact                  ->  the .html file
+/blog, /blog/:slug                                         ->  the generated index.html
+/(.*)                                                      ->  /index.html
 ```
 
-Every host pattern is anchored at both ends on purpose, so that
-`lp.fightfactoryjiujitsu.com` does NOT match and keeps serving the landing page
-at its root, along with `/kids` and `/back-to-school` through the catch-all.
+Every host pattern is anchored at both ends on purpose, so that no other host
+matches by accident and gets the site at its root.
 
 ⚠️ **`routes` turns off `rewrites`, `redirects`, `headers`, `cleanUrls` and
 `trailingSlash`.** Anything added later has to be written as a route. The three
@@ -324,10 +322,30 @@ them does not end the chain.
 ⭐ `handle: filesystem` still covers the serverless functions (`/api/capi`) and
 the static assets, which is why the catch-all below it does not swallow them.
 
-**The cutover is now DNS only.** Attaching `fightfactoryjiujitsu.com` and `www`
-to the project points the apex at the institutional home, with no further code
-change, because the rule for that host is already in the list above. The
-landing page keeps `lp.` to itself.
+## Where each host lands, and why the apex is NOT in that list
 
-**Review URL: https://fightfactoryjiujitsu.vercel.app** (bound to this branch,
-serves its latest deploy). `fightfactory-jj.vercel.app` still works as well.
+The institutional site is a **subdomain**, decided on 21/09/2026: it answers at
+`site.fightfactoryjiujitsu.com`, and the apex keeps serving the landing page.
+
+| Host | `/` serves |
+| --- | --- |
+| `site.fightfactoryjiujitsu.com` | the institutional site |
+| `fightfactory-jj.vercel.app` | the institutional site (review) |
+| `fightfactoryjiujitsu.com` and `www` | the landing page |
+| `lp.fightfactoryjiujitsu.com` | the landing page |
+
+⛔ **The apex rule was deliberately REMOVED from `vercel.json`.** It used to map
+`(www.)?fightfactoryjiujitsu.com` to `/home.html`. Left in place, merging this
+branch would silently move the client's own homepage from the landing page to
+the site, which is not what was asked for. Putting the site on the apex later
+is one line added back above `handle: filesystem`:
+
+```json
+{ "src": "/", "has": [{ "type": "host", "value": "^(www\\.)?fightfactoryjiujitsu\\.com$" }],
+  "dest": "/home.html" }
+```
+
+⚠️ The apex is already pointed at Vercel (A record `216.150.1.1`, certificate
+issued 21/09/2026) and the old WordPress is gone, so every unknown path there
+falls through the catch-all and answers 200 with the LANDING PAGE. The old
+WordPress URLs need redirects, and that is a round of its own.
