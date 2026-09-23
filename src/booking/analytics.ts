@@ -12,6 +12,7 @@
 // =============================================================================
 
 import { getFbc, getFbp } from './fb'
+import { clarityIdentify, mirrorToClarity } from './clarity'
 
 // Meta Pixel — o MESMO id do snippet base no index.html e do api/capi.ts.
 export const PIXEL_ID = '4326414901006955'
@@ -40,6 +41,7 @@ function newEventId(): string {
 /** Evento padrão do Meta: Pixel no browser + espelho /api/capi, MESMO event_id
  *  (§7.2/§7.6). O espelho sai mesmo se o fbq estiver bloqueado. */
 export function fbqTrack(event: string, params?: Record<string, unknown>): void {
+  mirrorToClarity(event, params)
   if (typeof window === 'undefined') return
   const eventId = newEventId()
   if (typeof window.fbq === 'function') {
@@ -64,6 +66,7 @@ export function fbqTrack(event: string, params?: Record<string, unknown>): void 
 /** Advanced Matching (§7.6.4): guarda o visitante para os eventos espelhados
  *  seguintes e repassa os mesmos campos ao Pixel (o fbq hasheia no browser). */
 export function identify(fields: { name?: string; email?: string; phone?: string }): void {
+  clarityIdentify(fields.email, fields.name)
   identified = { ...identified, ...fields }
   if (typeof window === 'undefined' || typeof window.fbq !== 'function') return
   const data: Record<string, string> = {}
