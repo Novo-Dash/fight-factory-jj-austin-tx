@@ -131,7 +131,7 @@
 .nd-hint { margin: 0; font-size: 13px; color: var(--nd-muted); }
 .nd-error { margin: 0; font-size: 13px; font-weight: 500; color: var(--nd-error); }
 .nd-foot { margin: 0; text-align: center; font-size: 12.5px; color: var(--nd-muted); }
-.nd-group { grid-column: 1 / -1; margin: 6px 0 0; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--nd-muted); }
+.nd-group { margin: 6px 0 0; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--nd-muted); }
 .nd-note { margin: 0; padding: 14px 16px; border: 1px solid var(--nd-line); border-radius: var(--nd-radius); background: var(--nd-surface); color: var(--nd-muted); font-size: 14px; }
 
 .nd-input {
@@ -142,7 +142,10 @@
 .nd-input:focus { outline: none; background: var(--nd-bg); border-color: var(--nd-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--nd-accent) 18%, transparent); }
 .nd-input.is-error { border-color: var(--nd-error); }
 
-.nd-options { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+/* cards as wide as their name: one line while the row has room, wrapping only when it does not */
+.nd-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.nd-options > * { flex: 1 1 auto; }
+.nd-options > .nd-group { flex-basis: 100%; }
 .nd-option {
   display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 10px 14px; cursor: pointer;
   border: 1px solid var(--nd-line); border-radius: var(--nd-radius); background: var(--nd-bg); transition: border-color 0.15s, background 0.15s;

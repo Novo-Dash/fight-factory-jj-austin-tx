@@ -15,7 +15,10 @@ export const copy = {
   ...client.copy,
 }
 
-/** Webhook 2 and get_programs: the shared n8n flow, fixed for every academy. */
+/** Classes and open starts: the Novo Dash app, straight (public, read-only, CDN-cached 60 s). */
+export const PROGRAMS_URL = 'https://clients.novodash.com/api/public/programs'
+
+/** Webhook 2: the shared n8n flow, fixed for every academy. */
 export const BOOKING_WEBHOOK = 'https://n8n.novodash.com/webhook/landing-page-booking'
 
 /** Webhook 1: the [ND] Primary Workflow inbound trigger of the academy's sub-account. */

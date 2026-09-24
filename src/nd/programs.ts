@@ -1,9 +1,10 @@
-import { BOOKING_WEBHOOK, client } from './config'
+import { PROGRAMS_URL, client } from './config'
 import type { Audience } from './types'
 
-// Classes and open times, live from GHL through the shared n8n flow. Nothing
-// about the class list is written by hand: a class added, renamed or paused in
-// GHL shows up on the next load.
+// Classes and open times, live from the Novo Dash app (the academy's schedule,
+// minus the starts already full in GHL). Nothing about the class list is
+// written by hand: a class added, renamed or paused shows up on the next load.
+// BookingProvider starts the fetch on page load, so the modal opens with it done.
 
 export type Program = {
   calendar_id: string
@@ -52,11 +53,7 @@ export function fetchPrograms(audience: Audience | null = client.booking.audienc
 
 async function load(): Promise<Program[]> {
   if (!client.ghl.locationId) return []
-  const res = await fetch(BOOKING_WEBHOOK, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'get_programs', location_id: client.ghl.locationId }),
-  })
+  const res = await fetch(`${PROGRAMS_URL}?location_id=${encodeURIComponent(client.ghl.locationId)}`)
   if (!res.ok) throw new Error(`get_programs responded ${res.status}`)
   const { programs } = (await res.json()) as { programs?: Array<Record<string, unknown>> }
   return (Array.isArray(programs) ? programs : [])

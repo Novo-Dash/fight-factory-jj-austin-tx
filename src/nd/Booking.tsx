@@ -33,7 +33,10 @@ export function BookingProvider({ children, source, audience }: { children: Reac
   const open = useCallback((o?: Options) => setOptions({ source, audience, ...o }), [source, audience])
   const close = useCallback(() => setOptions(null), [])
 
-  useEffect(() => captureAttribution(), [])
+  useEffect(() => {
+    captureAttribution()
+    fetchPrograms().catch(() => {}) // warm the class list; the form reuses this request
+  }, [])
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
