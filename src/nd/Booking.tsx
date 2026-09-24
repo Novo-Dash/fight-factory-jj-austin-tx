@@ -180,7 +180,7 @@ export function BookingForm({
     const booked = Boolean(program && data.date && data.time)
     return (
       <Success booked={booked} date={data.date} time={data.time} program={program ? shortName(program) : ''}
-        student={data.childName.trim() || data.fullName.trim()} onDone={onDone} />
+        name={data.fullName.trim()} onDone={onDone} />
     )
   }
 
@@ -408,9 +408,10 @@ function Calendar({
 }
 
 function Success({
-  booked, date, time, program, student, onDone,
-}: { booked: boolean; date: string; time: string; program: string; student: string; onDone?: () => void }) {
-  const first = student.split(/\s+/)[0]
+  booked, date, time, program, name, onDone,
+}: { booked: boolean; date: string; time: string; program: string; name: string; onDone?: () => void }) {
+  // Whoever filled the form reads this (the parent on a kids booking); the email goes to them.
+  const first = name.split(/\s+/)[0]
   const { address, mapsUrl } = client.academy
   return (
     <div className="nd-stack">
