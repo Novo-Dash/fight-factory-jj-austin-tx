@@ -24,6 +24,9 @@
   line-height: 1.5;
 }
 .nd *, .nd *::before, .nd *::after { box-sizing: border-box; }
+/* no line ends with a lone word (text-wrap-style only: text-wrap would reset nowrap) */
+:where(.nd) :where(p, li, legend, label) { text-wrap-style: pretty; }
+.nd-title, .nd-panel-title, .nd-panel-text { text-wrap-style: balance; }
 .nd a { color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
 :where(.nd ul) { margin: 0; padding: 0; list-style: none; }
 
@@ -94,7 +97,8 @@
 .nd-proof { margin: 0 0 6px; font-size: 13px; font-weight: 500; }
 .nd-proof span { color: #fbbc04; letter-spacing: 0.08em; }
 .nd-panel-name { margin: 0; font-size: 13px; font-weight: 600; }
-.nd-panel-address { margin: 0; font-size: 12px; opacity: 0.6; }
+/* one line always: fitLine() in Booking.tsx shrinks the font to fit */
+.nd-panel-address { margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 12px; opacity: 0.6; }
 
 /* form column */
 .nd-stack { display: grid; gap: 22px; }

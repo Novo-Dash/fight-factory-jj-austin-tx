@@ -71,6 +71,15 @@ export function BookPage({ source, audience }: Options) {
   )
 }
 
+/** Shrinks the text until it fits one line (the address), measured after the LP fonts load. */
+function fitLine(el: HTMLElement | null) {
+  const fit = () => {
+    el!.style.fontSize = ''
+    for (let size = 12; size > 9 && el!.scrollWidth > el!.clientWidth; size -= 0.25) el!.style.fontSize = `${size}px`
+  }
+  if (el) document.fonts.ready.then(fit)
+}
+
 /** Brand column: logo, offer, reasons, proof. Collapses to a compact header on phones. */
 function Panel() {
   const { name, logo, photo, address } = client.academy
@@ -90,7 +99,7 @@ function Panel() {
       <div className="nd-panel-foot">
         {copy.proof ? <p className="nd-proof"><span aria-hidden="true">★★★★★</span> {copy.proof}</p> : null}
         <p className="nd-panel-name">{name}</p>
-        {address ? <p className="nd-panel-address">{address}</p> : null}
+        {address ? <p ref={fitLine} className="nd-panel-address">{address}</p> : null}
       </div>
     </aside>
   )
