@@ -266,7 +266,9 @@ function Step1({
       </div>
       <fieldset className="nd-stack-xs">
         <legend className="nd-label">{isFallback ? 'Who is training?' : 'Choose your class'}<span className="nd-req" aria-hidden="true">*</span></legend>
-        {programs.status === 'loading' ? <div className="nd-skeleton" aria-hidden="true" /> : null}
+        {programs.status === 'loading' ? (
+          <div className="nd-loading" role="status"><span className="nd-spinner" aria-hidden="true" />Loading classes…</div>
+        ) : null}
         {programs.status === 'error' ? (
           <p className="nd-note">We could not load the class list just now. Pick adults or kids and we will call you with the times.</p>
         ) : null}
