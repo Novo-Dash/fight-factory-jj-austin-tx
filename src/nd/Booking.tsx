@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from 'react'
-import type { FormEvent, InputHTMLAttributes, ReactNode } from 'react'
+import type { CSSProperties, FormEvent, InputHTMLAttributes, ReactNode } from 'react'
 
 import { captureAttribution, formatPhone, prefillFromUrl, toE164 } from './attribution'
 import { client, copy } from './config'
@@ -56,15 +56,43 @@ export function BookingProvider({ children, source, audience }: { children: Reac
   )
 }
 
-/** The /book route: same form, full page. */
+/** The /book route: the modal's two columns as a page. */
 export function BookPage({ source, audience }: Options) {
   useEffect(() => captureAttribution(), [])
   return (
     <main className="nd nd-page">
-      <div className="nd-card">
-        <BookingForm source={source} audience={audience} />
+      <div className="nd-dialog is-page">
+        <Panel />
+        <div className="nd-scroll">
+          <BookingForm source={source} audience={audience} />
+        </div>
       </div>
     </main>
+  )
+}
+
+/** Brand column: logo, offer, reasons, proof. Collapses to a compact header on phones. */
+function Panel() {
+  const { name, logo, photo, address } = client.academy
+  return (
+    <aside className="nd-panel" style={photo ? ({ '--nd-photo': `url("${photo}")` } as CSSProperties) : undefined}>
+      <div className="nd-panel-head">
+        {logo ? <img src={logo} alt={name} className="nd-logo" draggable={false} /> : <p className="nd-wordmark">{name}</p>}
+        <p className="nd-eyebrow">{copy.eyebrow}</p>
+        <p className="nd-panel-title">{copy.panelTitle}</p>
+        <p className="nd-panel-text">{copy.panelText}</p>
+        <ul className="nd-bullets">
+          {copy.bullets.map((b) => (
+            <li key={b}><span className="nd-tick"><Icon d="M5 12.5l4.5 4.5L19 7.5" size={11} /></span>{b}</li>
+          ))}
+        </ul>
+      </div>
+      <div className="nd-panel-foot">
+        {copy.proof ? <p className="nd-proof"><span aria-hidden="true">★★★★★</span> {copy.proof}</p> : null}
+        <p className="nd-panel-name">{name}</p>
+        {address ? <p className="nd-panel-address">{address}</p> : null}
+      </div>
+    </aside>
   )
 }
 
@@ -91,13 +119,9 @@ function BookingModal({ options, onClose }: { options: Options; onClose: () => v
         <button type="button" onClick={onClose} aria-label="Close" className="nd-close">
           <Icon d="M6 6l12 12M18 6L6 18" />
         </button>
-        <aside className="nd-panel">
-          <p className="nd-panel-title">{copy.panelTitle}</p>
-          <p className="nd-panel-text">{copy.panelText}</p>
-          <p className="nd-panel-name">{client.academy.name}</p>
-        </aside>
+        <Panel />
         <div className="nd-scroll">
-          <BookingForm source={options.source} audience={options.audience} />
+          <BookingForm source={options.source} audience={options.audience} onDone={onClose} />
         </div>
       </div>
     </div>
@@ -107,7 +131,9 @@ function BookingModal({ options, onClose }: { options: Options; onClose: () => v
 type ProgramsState = { status: 'loading' | 'ready' | 'error'; list: Program[] }
 
 /** The funnel itself, for pages that embed it (the /book route, an inline closing section). */
-export function BookingForm({ source = client.source, audience = client.booking.audience }: Options) {
+export function BookingForm({
+  source = client.source, audience = client.booking.audience, onDone,
+}: Options & { onDone?: () => void }) {
   const scope = useId()
   const [step, setStep] = useState<1 | 2 | 'done'>(1)
   const [data, setData] = useState<BookingData>(() => ({
@@ -140,7 +166,10 @@ export function BookingForm({ source = client.source, audience = client.booking.
 
   if (step === 'done') {
     const booked = Boolean(program && data.date && data.time)
-    return <Success booked={booked} date={data.date} time={data.time} student={data.childName.trim() || data.fullName.trim()} />
+    return (
+      <Success booked={booked} date={data.date} time={data.time} program={program ? shortName(program) : ''}
+        student={data.childName.trim() || data.fullName.trim()} onDone={onDone} />
+    )
   }
 
   if (step === 2) {
@@ -224,30 +253,29 @@ function Step1({
   const groups = groupPrograms(programs.list)
   return (
     <form onSubmit={submit} noValidate className="nd-stack">
-      <header>
-        <h2 className="nd-title">{copy.formTitle}</h2>
-        <p className="nd-muted">Tell us who is training and we will hold a spot.</p>
-      </header>
+      <Head step={1} title={copy.formTitle} text={copy.formText} />
       <div className="nd-stack-sm">
-        <Field id={`${scope}-name`} label="Full name" autoComplete="name" value={data.fullName} error={errors.fullName}
+        <Field id={`${scope}-name`} label="Full name" autoComplete="name" placeholder="Jane Doe" value={data.fullName} error={errors.fullName}
           onChange={(e) => onChange({ fullName: e.target.value })} />
-        <Field id={`${scope}-email`} label="Email" type="email" autoComplete="email" value={data.email} error={errors.email}
-          onChange={(e) => onChange({ email: e.target.value })} />
-        <Field id={`${scope}-phone`} label="Phone" type="tel" inputMode="tel" autoComplete="tel" value={data.phone} error={errors.phone}
-          hint="So we can confirm your class." onChange={(e) => onChange({ phone: formatPhone(e.target.value) })} />
+        <div className="nd-row">
+          <Field id={`${scope}-email`} label="Email" type="email" autoComplete="email" placeholder="you@email.com" value={data.email} error={errors.email}
+            onChange={(e) => onChange({ email: e.target.value })} />
+          <Field id={`${scope}-phone`} label="Phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="(555) 555-0100" value={data.phone} error={errors.phone}
+            onChange={(e) => onChange({ phone: formatPhone(e.target.value) })} />
+        </div>
       </div>
-      <fieldset className="nd-stack-sm">
-        <legend className="nd-label">{isFallback ? 'Who is training?' : 'Choose the class'}</legend>
+      <fieldset className="nd-stack-xs">
+        <legend className="nd-label">{isFallback ? 'Who is training?' : 'Choose your class'}<span className="nd-req" aria-hidden="true">*</span></legend>
         {programs.status === 'loading' ? <div className="nd-skeleton" aria-hidden="true" /> : null}
         {programs.status === 'error' ? (
           <p className="nd-note">We could not load the class list just now. Pick adults or kids and we will call you with the times.</p>
         ) : null}
         {isFallback
-          ? (['adults', 'kids'] as const).map((a) =>
+          ? <div className="nd-options">{(['adults', 'kids'] as const).map((a) =>
               option(a, `${scope}-aud`, data.preferredAudience === a, a === 'adults' ? 'Adults' : 'Kids and teens', null,
-                () => onChange({ preferredAudience: a, childName: '' })))
+                () => onChange({ preferredAudience: a, childName: '' })))}</div>
           : groups.map((g) => (
-              <div key={g.label} className="nd-stack-xs">
+              <div key={g.label} className="nd-options">
                 {groups.length > 1 ? <p className="nd-group">{g.label}</p> : null}
                 {g.programs.map((p) =>
                   option(p.calendar_id, `${scope}-prog`, p.calendar_id === data.calendarId, shortName(p), ageHint(p),
@@ -260,7 +288,10 @@ function Step1({
         <Field id={`${scope}-child`} label="Your child's first name" value={data.childName} error={errors.childName}
           hint="The child who will be training. You stay as the contact." onChange={(e) => onChange({ childName: e.target.value })} />
       ) : null}
-      <button type="submit" className="nd-button">Continue</button>
+      <div className="nd-stack-xs">
+        <button type="submit" className="nd-button">Continue <Icon d="M5 12h14M13 6l6 6-6 6" size={18} /></button>
+        <p className="nd-foot">Next: pick the day and time of your free class.</p>
+      </div>
     </form>
   )
 }
@@ -291,11 +322,9 @@ function Step2({
 
   return (
     <div className="nd-stack">
-      <button type="button" onClick={onBack} className="nd-link">‹ Back to your details</button>
-      <header>
-        <h2 className="nd-title">{live ? 'Pick your time' : 'Confirm your request'}</h2>
-        {program ? <p className="nd-muted">Free trial class for <strong>{shortName(program)}</strong></p> : null}
-      </header>
+      <Head step={2} title={live ? 'Pick your time' : 'Confirm your request'}
+        text={program ? <>Free trial class · <strong>{shortName(program)}</strong></> : null}
+        back={<button type="button" onClick={onBack} className="nd-link">‹ Back</button>} />
       {live && program ? (
         <>
           <Calendar month={month} selected={data.date} bookable={(k) => Boolean(program.slots[k]?.length)}
@@ -303,7 +332,7 @@ function Step2({
             onMonth={setMonth} />
           {data.date && times.length ? (
             <div className="nd-stack-xs">
-              <p className="nd-label">Open times on {longDate(data.date)}</p>
+              <p className="nd-label">{longDate(data.date)}</p>
               <div className="nd-times">
                 {times.map((t) => (
                   <button key={t} type="button" aria-pressed={t === data.time} onClick={() => onChange({ time: t })}
@@ -319,7 +348,9 @@ function Step2({
           {client.academy.phone ? <>, or call the academy on <a href={`tel:${client.academy.phone.replace(/[^\d+]/g, '')}`}>{client.academy.phone}</a></> : null}.
         </p>
       )}
-      <button type="button" disabled={!canConfirm} onClick={onConfirm} className="nd-button">{copy.confirm}</button>
+      <button type="button" disabled={!canConfirm} onClick={onConfirm} className="nd-button">
+        {copy.confirm} <Icon d="M5 12h14M13 6l6 6-6 6" size={18} />
+      </button>
     </div>
   )
 }
@@ -362,24 +393,36 @@ function Calendar({
   )
 }
 
-function Success({ booked, date, time, student }: { booked: boolean; date: string; time: string; student: string }) {
+function Success({
+  booked, date, time, program, student, onDone,
+}: { booked: boolean; date: string; time: string; program: string; student: string; onDone?: () => void }) {
   const first = student.split(/\s+/)[0]
   const { address, mapsUrl } = client.academy
   return (
     <div className="nd-stack">
-      <h2 className="nd-title">{booked ? 'Your spot is booked' : 'We have your request'}</h2>
-      <p className="nd-muted">
+      <Head step={3} title={booked ? "You're booked" : 'We have your request'}
+        text={booked
+          ? <>{first ? `${first}, a` : 'A'} confirmation is on its way to your email.</>
+          : <>{first ? `Thanks, ${first}. ` : ''}We will call you to confirm your class, normally the same day.</>} />
+      <ul className="nd-details">
         {booked ? (
-          <>{first ? `${first}, we` : 'We'} will see you on <strong>{longDate(date)}</strong> at <strong>{timeLabel(time)}</strong>. A confirmation is on its way to your email.</>
-        ) : (
-          <>{first ? `Thanks, ${first}. ` : ''}We will call you to confirm your class, normally the same day.</>
-        )}
-      </p>
-      <div className="nd-box nd-stack-xs">
+          <li><Icon d="M7 3v3M17 3v3M4 9h16M5 5h14a1 1 0 011 1v13a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1z" size={18} />
+            <span><strong>{longDate(date)}</strong><br />{timeLabel(time)}{program ? ` · ${program}` : ''}</span></li>
+        ) : null}
+        {address ? (
+          <li><Icon d="M12 21s-7-6.2-7-11.5a7 7 0 0114 0C19 14.8 12 21 12 21zM12 12a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" size={18} />
+            <a href={mapsUrl || `https://maps.google.com/?q=${encodeURIComponent(address)}`} target="_blank" rel="noopener noreferrer">{address}</a></li>
+        ) : null}
+      </ul>
+      <div className="nd-stack-xs">
         <p className="nd-label">Before you come in</p>
-        <p className="nd-muted">Wear a t-shirt and shorts, bring water, and arrive a few minutes early so someone can show you around.</p>
-        {address ? <a href={mapsUrl || `https://maps.google.com/?q=${encodeURIComponent(address)}`} target="_blank" rel="noopener noreferrer">{address}</a> : null}
+        <ul className="nd-tips">
+          <li>Wear a t-shirt and shorts</li>
+          <li>Bring water</li>
+          <li>Arrive a few minutes early so someone can show you around</li>
+        </ul>
       </div>
+      {onDone ? <button type="button" onClick={onDone} className="nd-button">Done</button> : null}
     </div>
   )
 }
@@ -387,7 +430,7 @@ function Success({ booked, date, time, student }: { booked: boolean; date: strin
 function Field({ id, label, error, hint, ...props }: { id: string; label: string; error?: string; hint?: string } & InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div className="nd-stack-xs">
-      <label htmlFor={id} className="nd-label">{label}</label>
+      <label htmlFor={id} className="nd-label">{label}<span className="nd-req" aria-hidden="true">*</span></label>
       <input id={id} {...props} aria-invalid={error ? true : undefined} className={`nd-input${error ? ' is-error' : ''}`} />
       {hint ? <p className="nd-hint">{hint}</p> : null}
       {error ? <p className="nd-error">{error}</p> : null}
@@ -395,9 +438,23 @@ function Field({ id, label, error, hint, ...props }: { id: string; label: string
   )
 }
 
-function Icon({ d }: { d: string }) {
+/** Step bar and title on top of every step. */
+function Head({ step, title, text, back }: { step: 1 | 2 | 3; title: string; text?: ReactNode; back?: ReactNode }) {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+    <header className="nd-head">
+      <div className="nd-progress" aria-hidden="true">
+        {[1, 2, 3].map((n) => <span key={n} className={n <= step ? 'is-on' : undefined} />)}
+      </div>
+      <p className="nd-step">{step === 3 ? 'All set' : `Step ${step} of 2`}{back}</p>
+      <h2 className="nd-title">{title}</h2>
+      {text ? <p className="nd-muted">{text}</p> : null}
+    </header>
+  )
+}
+
+function Icon({ d, size = 20 }: { d: string; size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
       <path d={d} />
     </svg>
   )

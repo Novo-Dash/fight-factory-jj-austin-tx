@@ -2,10 +2,20 @@
 export type Audience = 'adults' | 'kids'
 
 export type Client = {
-  academy: { name: string; phone: string; address: string; mapsUrl: string }
+  /** logo and photo: paths in the LP's public/ (logo reads on the dark brand panel; photo sits behind it). */
+  academy: { name: string; phone: string; address: string; mapsUrl: string; logo?: string; photo?: string }
   ghl: { locationId: string; leadWebhookUuid: string }
-  /** The academy's offer, when it is not a single free class ("free week"). */
-  copy?: { panelTitle?: string; panelText?: string; formTitle?: string; confirm?: string }
+  /** Brand panel and form texts; defaults in config.ts. proof = Google rating line, shown with five stars. */
+  copy?: {
+    eyebrow?: string
+    panelTitle?: string
+    panelText?: string
+    bullets?: string[]
+    proof?: string
+    formTitle?: string
+    formText?: string
+    confirm?: string
+  }
   /** CRM source when the visit carries no paid click id. */
   source: string
   tracking: {

@@ -5,11 +5,26 @@ export default {
     "name": "Fight Factory Jiu-Jitsu",
     "phone": "(512) 428-6125",
     "address": "9607 Research Blvd, Suite #675, Austin, TX 78759",
-    "mapsUrl": "https://maps.google.com/?q=Fight+Factory+Jiu-Jitsu+Austin+TX"
+    "mapsUrl": "https://maps.google.com/?q=Fight+Factory+Jiu-Jitsu+Austin+TX",
+    "logo": "/images/FONTE.webp",
+    "photo": "/images/1.webp"
   },
   "ghl": {
     "locationId": "7ai3O8KqknYgJu59oYfE",
     "leadWebhookUuid": "zvG8tH1SZiNIXKU5a0GQ"
+  },
+  "copy": {
+    "eyebrow": "Free trial class",
+    "panelTitle": "Your first class is on us",
+    "panelText": "Book a free trial at Austin's premier BJJ academy. No pressure, just a great first class.",
+    "bullets": [
+      "No commitment, ever",
+      "No experience required",
+      "Clean uniform provided"
+    ],
+    "proof": "5.0 on Google · 250+ students",
+    "formTitle": "Book your free trial class",
+    "formText": "No commitment. No experience required."
   },
   "source": "Landing Page - Main",
   "tracking": {

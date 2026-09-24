@@ -141,4 +141,7 @@ body {
   --nd-line: var(--color-border);
   --nd-font: var(--font-body);
   --nd-font-display: var(--font-display);
+  --nd-display-case: uppercase;
+  --nd-display-weight: 400;
+  --nd-logo-filter: brightness(0) invert(1);
 }
