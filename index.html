@@ -28,44 +28,35 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-    <!-- Meta Pixel -->
-    <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '4326414901006955');
-    fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=4326414901006955&ev=PageView&noscript=1"
-    /></noscript>
-    <!-- End Meta Pixel -->
 
-    <!-- Google: GA4 + Google Ads (gtag.js) — sem GTM -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18177687947"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-RM8ZE8H789');   // GA4 (page_view automático)
-      gtag('config', 'AW-18177687947'); // Google Ads (tag de remarketing automática)
-    </script>
-    <!-- End Google gtag.js -->
     <link rel="preconnect" href="https://www.clarity.ms" crossorigin />
-    <!-- Microsoft Clarity -->
-    <script type="text/javascript">
-      (function(c,l,a,r,i,t,y){
-          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-      })(window, document, "clarity", "script", "ymw9ljkhe1");
+      <!-- nd:tracking:start (Novo Dash kit; gerado de src/nd/client.ts, não editar à mão) -->
+    <script>window.__ND={"pixel":"4326414901006955","ga4":"G-RM8ZE8H789","ads":"AW-18177687947","clarity":"ymw9ljkhe1"}</script>
+    <script>
+      (function (n) {
+        if (n.pixel) {
+          !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', n.pixel);
+          fbq('track', 'PageView');
+        }
+        var loader = n.ads || n.ga4;
+        if (loader) {
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=' + loader;
+          document.head.appendChild(s);
+          window.dataLayer = window.dataLayer || [];
+          window.gtag = function () { window.dataLayer.push(arguments); };
+          gtag('js', new Date());
+          if (n.ga4) gtag('config', n.ga4);
+          if (n.ads) gtag('config', n.ads);
+        }
+        if (n.clarity) {
+          (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script",n.clarity);
+        }
+      })(window.__ND);
     </script>
-    <!-- End Microsoft Clarity -->
+    <!-- nd:tracking:end -->
   </head>
   <body>
     <div id="root"></div>

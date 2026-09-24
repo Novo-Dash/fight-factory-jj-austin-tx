@@ -1,5 +1,5 @@
 import { useScrollDepth } from './hooks/useScrollDepth'
-import { BookingProvider } from './booking/BookingProvider'
+import { BookingProvider } from './nd'
 import { Navbar } from './components/layout/Navbar'
 import { Footer } from './components/sections/Footer'
 import {

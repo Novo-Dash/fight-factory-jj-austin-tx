@@ -1,24 +1,7 @@
-import { createContext, useContext, useState, useCallback } from 'react'
+import { useBooking } from '../nd'
 
-interface ModalContextValue {
-  isOpen: boolean
-  openModal: () => void
-  closeModal: () => void
-}
-
-export const ModalContext = createContext<ModalContextValue>({
-  isOpen: false,
-  openModal: () => {},
-  closeModal: () => {},
-})
-
+// Novo Dash kit: the page's buttons keep calling useModal(); the funnel itself lives in src/nd.
 export function useModal() {
-  return useContext(ModalContext)
-}
-
-export function useModalState() {
-  const [isOpen, setIsOpen] = useState(false)
-  const openModal = useCallback(() => setIsOpen(true), [])
-  const closeModal = useCallback(() => setIsOpen(false), [])
-  return { isOpen, openModal, closeModal }
+  const booking = useBooking()
+  return { isOpen: booking.isOpen, openModal: () => booking.open(), closeModal: booking.close }
 }

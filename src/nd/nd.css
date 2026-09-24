@@ -1,0 +1,112 @@
+/* Novo Dash booking kit. Identical in every LP: the page sets these variables (its .nd rule wins:
+   the defaults below have zero specificity) and the funnel takes its brand from them. */
+:where(.nd) {
+  --nd-accent: #111111;
+  --nd-accent-ink: #ffffff;
+  --nd-ink: #141414;
+  --nd-muted: #5b5b5b;
+  --nd-bg: #ffffff;
+  --nd-surface: #f4f4f4;
+  --nd-line: #e0e0e0;
+  --nd-error: #b42318;
+  --nd-radius: 12px;
+  --nd-font: inherit;
+  --nd-font-display: inherit;
+  --nd-panel: var(--nd-accent);
+  --nd-panel-ink: var(--nd-accent-ink);
+  font-family: var(--nd-font);
+  color: var(--nd-ink);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.nd *, .nd *::before, .nd *::after { box-sizing: border-box; }
+.nd a { color: inherit; font-weight: 600; text-decoration: underline; }
+
+.nd-overlay {
+  position: fixed; inset: 0; z-index: 1000; display: flex; align-items: stretch; justify-content: center;
+  background: rgb(0 0 0 / 0.55); padding: 0; overflow-y: auto;
+}
+.nd-dialog {
+  position: relative; display: flex; flex-direction: column; width: 100%; max-width: 880px; max-height: 100dvh;
+  background: var(--nd-bg); overflow: hidden; outline: none; box-shadow: 0 24px 64px rgb(0 0 0 / 0.3);
+}
+.nd-close {
+  position: absolute; top: 12px; right: 12px; z-index: 1; display: grid; place-items: center; width: 44px; height: 44px;
+  border: 1px solid var(--nd-line); border-radius: 999px; background: var(--nd-bg); color: var(--nd-ink); cursor: pointer;
+}
+.nd-panel { display: none; }
+.nd-scroll { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 32px 20px; }
+@media (min-width: 640px) {
+  .nd-overlay { align-items: center; padding: 24px; }
+  .nd-dialog { max-height: 90dvh; border-radius: calc(var(--nd-radius) * 1.6); }
+  .nd-scroll { padding: 32px; }
+}
+@media (min-width: 768px) {
+  .nd-dialog { flex-direction: row; }
+  .nd-panel {
+    display: flex; flex-direction: column; width: 290px; flex-shrink: 0; padding: 32px;
+    background: var(--nd-panel); color: var(--nd-panel-ink);
+  }
+}
+.nd-panel-title { margin: 0; font-family: var(--nd-font-display); font-size: 24px; line-height: 1.15; }
+.nd-panel-text { margin: 12px 0 0; font-size: 14px; opacity: 0.8; }
+.nd-panel-name { margin: auto 0 0; padding-top: 20px; border-top: 1px solid currentColor; font-weight: 600; font-size: 14px; opacity: 0.9; }
+
+.nd-page { min-height: 100dvh; display: flex; justify-content: center; padding: 32px 16px; background: var(--nd-surface); }
+.nd-card { width: 100%; max-width: 560px; background: var(--nd-bg); border-radius: calc(var(--nd-radius) * 1.6); padding: 32px 20px; }
+@media (min-width: 640px) { .nd-card { padding: 40px; } }
+
+.nd-stack { display: grid; gap: 24px; }
+.nd-stack-sm { display: grid; gap: 16px; border: 0; margin: 0; padding: 0; min-width: 0; }
+.nd-stack-xs { display: grid; gap: 8px; }
+.nd-title { margin: 0; font-family: var(--nd-font-display); font-size: 25px; line-height: 1.2; color: var(--nd-ink); }
+.nd-muted { margin: 6px 0 0; color: var(--nd-muted); }
+.nd-label { margin: 0; padding: 0; font-size: 14px; font-weight: 600; color: var(--nd-muted); }
+.nd-hint { margin: 0; font-size: 14px; color: var(--nd-muted); }
+.nd-error { margin: 0; font-size: 14px; font-weight: 500; color: var(--nd-error); }
+.nd-group { margin: 8px 0 0; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--nd-muted); }
+.nd-note, .nd-box { margin: 0; padding: 16px; border: 1px solid var(--nd-line); border-radius: var(--nd-radius); background: var(--nd-surface); color: var(--nd-muted); font-size: 14px; }
+
+.nd-input {
+  width: 100%; padding: 14px 18px; border: 1px solid var(--nd-line); border-radius: var(--nd-radius);
+  background: var(--nd-bg); color: var(--nd-ink); font: inherit;
+}
+.nd-input:focus { outline: none; border-color: var(--nd-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--nd-accent) 20%, transparent); }
+.nd-input.is-error { border-color: var(--nd-error); }
+
+.nd-option {
+  display: flex; align-items: center; gap: 12px; padding: 16px; cursor: pointer;
+  border: 1px solid var(--nd-line); border-radius: var(--nd-radius); background: var(--nd-bg);
+}
+.nd-option.is-active { border-color: var(--nd-accent); background: color-mix(in srgb, var(--nd-accent) 8%, var(--nd-bg)); }
+.nd-option input { width: 16px; height: 16px; accent-color: var(--nd-accent); }
+.nd-option-title { display: block; font-weight: 600; }
+.nd-option-hint { display: block; font-size: 14px; color: var(--nd-muted); }
+.nd-skeleton { height: 62px; border-radius: var(--nd-radius); background: var(--nd-surface); animation: nd-pulse 1.2s ease-in-out infinite; }
+@keyframes nd-pulse { 50% { opacity: 0.5; } }
+
+.nd-button {
+  display: inline-flex; width: 100%; min-height: 52px; align-items: center; justify-content: center; gap: 8px;
+  border: 0; border-radius: var(--nd-radius); background: var(--nd-accent); color: var(--nd-accent-ink);
+  font: inherit; font-weight: 700; cursor: pointer;
+}
+.nd-button:disabled { background: var(--nd-surface); color: var(--nd-muted); cursor: not-allowed; }
+.nd-link { width: fit-content; padding: 8px 0; border: 0; background: none; color: var(--nd-muted); font: inherit; font-weight: 600; cursor: pointer; }
+
+.nd-calendar { padding: 16px; border: 1px solid var(--nd-line); border-radius: var(--nd-radius); user-select: none; }
+.nd-cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; font-weight: 600; }
+.nd-cal-head button { width: 44px; height: 44px; border: 0; border-radius: 999px; background: none; color: var(--nd-ink); font-size: 22px; cursor: pointer; }
+.nd-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.nd-cal-dow { padding: 4px 0; text-align: center; font-size: 13px; font-weight: 600; color: var(--nd-muted); }
+.nd-day { aspect-ratio: 1; border: 0; border-radius: 999px; background: none; color: var(--nd-ink); font: inherit; font-weight: 600; cursor: pointer; }
+.nd-day:disabled { color: var(--nd-muted); opacity: 0.35; cursor: not-allowed; }
+.nd-day:not(:disabled):hover { background: color-mix(in srgb, var(--nd-accent) 10%, transparent); }
+.nd-day.is-active { background: var(--nd-accent); color: var(--nd-accent-ink); }
+.nd-times { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+@media (min-width: 640px) { .nd-times { grid-template-columns: repeat(4, 1fr); } }
+.nd-time {
+  min-height: 44px; border: 1px solid var(--nd-line); border-radius: 999px; background: var(--nd-bg);
+  color: var(--nd-ink); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.nd-time.is-active { border-color: var(--nd-accent); background: var(--nd-accent); color: var(--nd-accent-ink); }
+@media (prefers-reduced-motion: reduce) { .nd-skeleton { animation: none; } }

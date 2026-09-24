@@ -128,3 +128,17 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Novo Dash booking kit (src/nd): the funnel takes the page's brand from these. */
+.nd {
+  --nd-accent: #CC0000;
+  --nd-panel: #0A0A0A;
+  --nd-accent-ink: #ffffff;
+  --nd-ink: var(--color-text-primary);
+  --nd-muted: var(--color-text-secondary);
+  --nd-bg: var(--color-bg);
+  --nd-surface: var(--color-bg-subtle);
+  --nd-line: var(--color-border);
+  --nd-font: var(--font-body);
+  --nd-font-display: var(--font-display);
+}
