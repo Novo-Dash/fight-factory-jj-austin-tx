@@ -140,7 +140,7 @@ body {
   --nd-surface: var(--color-bg-subtle);
   --nd-line: var(--color-border);
   --nd-font: var(--font-body);
-  --nd-font-display: var(--font-display);
+  --nd-font-display: 'Anton', sans-serif;
   --nd-display-case: uppercase;
   --nd-display-weight: 400;
   --nd-logo-filter: brightness(0) invert(1);

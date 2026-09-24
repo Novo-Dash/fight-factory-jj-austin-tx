@@ -56,9 +56,9 @@
 .nd-panel {
   position: relative; flex-shrink: 0; display: flex; flex-direction: column; padding: 20px 64px 20px 20px;
   color: var(--nd-panel-ink);
+  /* flat panel-colour veil over the photo: no glow, no fade */
   background:
-    radial-gradient(90% 55% at 100% 0%, color-mix(in srgb, var(--nd-accent) 40%, transparent), transparent 70%),
-    linear-gradient(180deg, var(--nd-panel) 0%, color-mix(in srgb, var(--nd-panel) 88%, transparent) 42%, color-mix(in srgb, var(--nd-panel) 72%, transparent) 100%),
+    linear-gradient(color-mix(in srgb, var(--nd-panel) 84%, transparent), color-mix(in srgb, var(--nd-panel) 84%, transparent)),
     var(--nd-photo, none) center / cover no-repeat,
     var(--nd-panel);
 }
@@ -68,7 +68,7 @@
   display: flex; align-items: center; gap: 8px; margin: 14px 0 0;
   font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7;
 }
-.nd-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 999px; background: var(--nd-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--nd-accent) 30%, transparent); }
+.nd-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 999px; background: var(--nd-accent); }
 .nd-panel-title {
   margin: 6px 0 0; font-family: var(--nd-font-display); font-weight: var(--nd-display-weight);
   text-transform: var(--nd-display-case); font-size: 22px; line-height: 1.08;
@@ -155,11 +155,11 @@
   display: inline-flex; width: 100%; min-height: 54px; align-items: center; justify-content: center; gap: 8px;
   border: 0; border-radius: var(--nd-button-radius); background: var(--nd-accent); color: var(--nd-accent-ink);
   font: inherit; font-size: 15.5px; font-weight: 700; letter-spacing: 0.01em; cursor: pointer;
-  box-shadow: 0 12px 28px -12px color-mix(in srgb, var(--nd-accent) 80%, transparent); transition: filter 0.15s, transform 0.15s;
+  transition: filter 0.15s, transform 0.15s;
 }
 .nd-button:hover:not(:disabled) { filter: brightness(1.08); }
 .nd-button:active:not(:disabled) { transform: translateY(1px); }
-.nd-button:disabled { background: var(--nd-surface); color: var(--nd-muted); box-shadow: none; cursor: not-allowed; }
+.nd-button:disabled { background: var(--nd-surface); color: var(--nd-muted); cursor: not-allowed; }
 .nd-link {
   margin-left: auto; padding: 4px 0; border: 0; background: none; color: var(--nd-ink); font: inherit;
   font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; cursor: pointer;
