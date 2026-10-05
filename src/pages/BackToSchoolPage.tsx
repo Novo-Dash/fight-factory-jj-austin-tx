@@ -1,5 +1,5 @@
 ﻿import { useEffect, useRef, useState } from 'react'
-import { BookingProvider } from '../booking/BookingProvider'
+import { BookingProvider } from '../nd'
 import { BackToSchoolNavbar } from '../components/layout/BackToSchoolNavbar'
 import { BackToSchoolFooter } from '../components/sections/BackToSchoolFooter'
 import { useModal } from '../hooks/useModal'
@@ -1124,7 +1124,7 @@ export function BackToSchoolPage() {
   }, [])
 
   return (
-    <BookingProvider kidsMode>
+    <BookingProvider audience="kids" source="Landing Page - Back to School">
       <BackToSchoolNavbar />
       <main>
         <Hero />

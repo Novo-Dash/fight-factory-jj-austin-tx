@@ -28,7 +28,7 @@ export const ACADEMY = {
 } as const
 
 /** Public tracking ids live in the HTML documents, not here. */
-export const SITE_URL = 'https://www.fightfactoryjiujitsu.com'
+export const SITE_URL = 'https://fightfactoryjiujitsu.com'
 
 /** Lead source written into both webhooks by every form on this site, so the
  *  CRM can tell a website enquiry from a paid-traffic landing page lead. */

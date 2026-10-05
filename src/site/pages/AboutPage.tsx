@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useModal } from '../../hooks/useModal'
+import { useModal } from '../hooks/useSiteModal'
 import { MaskHeading } from '../components/MaskHeading'
 import { PageHead } from '../components/PageHead'
 import { Reveal, Uncover } from '../components/motion'

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useModal } from '../../hooks/useModal'
+import { useModal } from '../hooks/useSiteModal'
 import { MaskHeading } from '../components/MaskHeading'
 import { PostBody } from '../components/PostBody'
 import { Reveal, Uncover } from '../components/motion'

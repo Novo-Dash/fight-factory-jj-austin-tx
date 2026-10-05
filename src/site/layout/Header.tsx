@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useModal } from '../../hooks/useModal'
+import { useModal } from '../hooks/useSiteModal'
 import { ACADEMY, HOME_HREF, NAV } from '../content/site'
 import { Icon } from '../components/Icon'
 import { Diamond } from '../components/ui'

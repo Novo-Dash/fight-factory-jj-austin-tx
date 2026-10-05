@@ -31,6 +31,16 @@
       "dest": "/home.html"
     },
     {
+      "src": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?fightfactoryjiujitsu\\.com$"
+        }
+      ],
+      "dest": "/home.html"
+    },
+    {
       "handle": "filesystem"
     },
     {

@@ -1,4 +1,4 @@
-import { useModal } from '../../hooks/useModal'
+import { useModal } from '../hooks/useSiteModal'
 import { MaskHeading } from '../components/MaskHeading'
 import { Reveal } from '../components/motion'
 import { useParallax } from '../components/scroll'

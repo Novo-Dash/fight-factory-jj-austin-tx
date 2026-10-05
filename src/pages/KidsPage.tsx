@@ -1,5 +1,5 @@
 ﻿import { useEffect, useRef, useState } from 'react'
-import { BookingProvider } from '../booking/BookingProvider'
+import { BookingProvider } from '../nd'
 import { KidsNavbar } from '../components/layout/KidsNavbar'
 import { KidsFooter } from '../components/sections/KidsFooter'
 import { useModal } from '../hooks/useModal'
@@ -1109,7 +1109,7 @@ export function KidsPage() {
   }, [])
 
   return (
-    <BookingProvider kidsMode>
+    <BookingProvider audience="kids">
       <KidsNavbar />
       <main>
         <Hero />

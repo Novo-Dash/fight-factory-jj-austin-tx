@@ -25,7 +25,7 @@ const POSTS_DIR = join(ROOT, 'src/site/content/blog/posts')
 const OUT_DIR = join(ROOT, 'blog')
 const CACHE = join(ROOT, 'node_modules/.cache/blog')
 
-const SITE = 'https://www.fightfactoryjiujitsu.com'
+const SITE = 'https://fightfactoryjiujitsu.com'
 const NAME = 'Fight Factory Jiu Jitsu'
 
 /**

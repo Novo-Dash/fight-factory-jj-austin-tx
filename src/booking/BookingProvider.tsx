@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { ModalContext, useModalState } from '../hooks/useModal'
+import { ModalContext, useModalState } from '../site/hooks/useSiteModal'
 import { BookingModal } from './BookingModal'
 
 /**
