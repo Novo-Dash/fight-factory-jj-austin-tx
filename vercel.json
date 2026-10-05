@@ -41,6 +41,84 @@
       "dest": "/home.html"
     },
     {
+      "src": "/home(/.*)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "^lp\\.fightfactoryjiujitsu\\.com$"
+        }
+      ],
+      "status": 301,
+      "headers": {
+        "Location": "https://fightfactoryjiujitsu.com/home$1"
+      }
+    },
+    {
+      "src": "/about(/.*)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "^lp\\.fightfactoryjiujitsu\\.com$"
+        }
+      ],
+      "status": 301,
+      "headers": {
+        "Location": "https://fightfactoryjiujitsu.com/about$1"
+      }
+    },
+    {
+      "src": "/programs(/.*)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "^lp\\.fightfactoryjiujitsu\\.com$"
+        }
+      ],
+      "status": 301,
+      "headers": {
+        "Location": "https://fightfactoryjiujitsu.com/programs$1"
+      }
+    },
+    {
+      "src": "/schedule(/.*)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "^lp\\.fightfactoryjiujitsu\\.com$"
+        }
+      ],
+      "status": 301,
+      "headers": {
+        "Location": "https://fightfactoryjiujitsu.com/schedule$1"
+      }
+    },
+    {
+      "src": "/contact(/.*)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "^lp\\.fightfactoryjiujitsu\\.com$"
+        }
+      ],
+      "status": 301,
+      "headers": {
+        "Location": "https://fightfactoryjiujitsu.com/contact$1"
+      }
+    },
+    {
+      "src": "/blog(/.*)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "^lp\\.fightfactoryjiujitsu\\.com$"
+        }
+      ],
+      "status": 301,
+      "headers": {
+        "Location": "https://fightfactoryjiujitsu.com/blog$1"
+      }
+    },
+    {
       "handle": "filesystem"
     },
     {
