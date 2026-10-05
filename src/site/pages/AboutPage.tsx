@@ -360,7 +360,7 @@ function Approach() {
           width={1000}
           height={1300}
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover object-[50%_25%] will-change-transform"
+          className="absolute inset-0 h-full w-full object-cover object-[50%_20%] will-change-transform"
         />
         <div
           aria-hidden="true"

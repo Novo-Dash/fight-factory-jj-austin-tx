@@ -66,7 +66,7 @@ function Hero() {
           width={2000}
           height={1250}
           fetchPriority="high"
-          className="absolute inset-0 -z-20 h-full w-full object-cover object-[54%_30%] md:object-[50%_38%]"
+          className="absolute inset-0 -z-20 h-full w-full object-cover object-[54%_30%] md:object-[50%_30%]"
         />
       </picture>
 
@@ -173,11 +173,14 @@ function Hero() {
 
 const STRIP = [
   { src: '/site/home/team-panorama.webp', alt: 'The whole academy on the mat', w: 'w-[88vw] sm:w-[62vw] lg:w-[46vw]' },
-  { src: '/site/rail/ceremony.webp', alt: 'A belt ceremony in progress', w: 'w-[76vw] sm:w-[42vw] lg:w-[30vw]' },
-  { src: '/site/home/drill.webp', alt: 'Two students drilling in a no-gi class', w: 'w-[76vw] sm:w-[44vw] lg:w-[32vw]' },
-  { src: '/site/rail/team-hall.webp', alt: 'The team in the hall before class', w: 'w-[66vw] sm:w-[34vw] lg:w-[24vw]' },
+  // pos: centrado, o trilho cortava a cabeca de quem recebe a faixa.
+  { src: '/site/rail/ceremony.webp', alt: 'A belt ceremony in progress', w: 'w-[76vw] sm:w-[42vw] lg:w-[30vw]', pos: '50% 16%' },
+  // pos: a 1440 a caixa fica deitada e cortava a cabeca de quem esta em pe.
+  { src: '/site/home/drill.webp', alt: 'Two students drilling in a no-gi class', w: 'w-[76vw] sm:w-[44vw] lg:w-[32vw]', pos: '50% 0%' },
+  // pos: sem reenquadrar, o card do trilho cortava a cabeça do professor.
+  { src: '/site/rail/team-hall.webp', alt: 'The team in the hall before class', w: 'w-[66vw] sm:w-[34vw] lg:w-[24vw]', pos: '50% 0%' },
   { src: '/site/rail/kids-pair.webp', alt: 'Two children drilling in the kids class', w: 'w-[76vw] sm:w-[42vw] lg:w-[30vw]' },
-  { src: '/site/rail/corner-belt.webp', alt: 'Coaching from the corner at a competition', w: 'w-[66vw] sm:w-[32vw] lg:w-[23vw]' },
+  { src: '/site/rail/corner-belt.webp', alt: 'Coaching from the corner at a competition', w: 'w-[66vw] sm:w-[32vw] lg:w-[23vw]', pos: '50% 60%' },
   { src: '/site/home/nogi-worlds.webp', alt: 'The team with their medals at the IBJJF No-Gi Worlds', w: 'w-[80vw] sm:w-[46vw] lg:w-[33vw]' },
 ]
 
@@ -226,6 +229,7 @@ function Academy() {
                       alt={m.alt}
                       loading="lazy"
                       draggable={false}
+                      style={m.pos ? { objectPosition: m.pos } : undefined}
                       className="aspect-[4/3] w-full object-cover"
                     />
                     <div className="p-4">
@@ -259,6 +263,7 @@ function Academy() {
                 alt={p.alt}
                 loading="lazy"
                 draggable={false}
+                style={'pos' in p ? { objectPosition: p.pos } : undefined}
                 className="h-full w-full object-cover"
               />
             </figure>
@@ -382,6 +387,8 @@ const PANELS: Panel[] = [
     meta: `${ADULTS.classes.length} class types · Mon – Sat`,
     photo: ADULTS.photo,
     alt: 'Adults gi class training on the main mat',
+    // pos: no empilhado (<=640) a faixa cortava a cabeca da fileira inteira.
+    pos: '50% 25%',
     icon: 'gi',
     points: ['Gi and no-gi, every level', 'Beginners paired deliberately', 'Mornings, midday and evenings'],
   },
@@ -415,6 +422,8 @@ const PANELS: Panel[] = [
     meta: 'Friday 5:00 PM',
     photo: '/site/programs/adults-roll.webp',
     alt: 'Adults rolling in the gi on the main mat',
+    // Na lâmina fechada o centro mostrava só pernas: 16% traz os rostos.
+    pos: '16% 50%',
     icon: 'nogi',
     points: ['A room of first-timers', 'Nobody outranks anybody', 'The place to start from zero'],
   },

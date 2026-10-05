@@ -126,6 +126,8 @@ export const TICKER = [
  * Ver src/site/content/blog/posts/2025-12-18-andrew-tackett-ufc-bjj-4.ts.
  */
 export interface Milestone {
+  /** object-position da foto, quando o sujeito não está no centro do quadro. */
+  pos?: string
   year: string
   title: string
   text: string
@@ -147,6 +149,8 @@ export const MILESTONES: Milestone[] = [
     text: 'Awarded by Léo Vieira, multiple-time ADCC and World Champion, and one of the most accomplished athletes in the sport.',
     photo: '/site/home/rodrigo-mat.webp',
     alt: 'Rodrigo Cabral in his black gi',
+    // Retrato num card 4/3: centrado, o card mostrava só o tronco, sem a cabeça.
+    pos: '50% 0%',
   },
   {
     year: '2013',
@@ -161,6 +165,7 @@ export const MILESTONES: Milestone[] = [
     text: 'William Tackett receives his black belt from Rodrigo, four years after walking in as a blue belt.',
     photo: '/site/team/william-tackett.webp',
     alt: 'William Tackett in his black gi',
+    pos: '50% 0%',
   },
   {
     year: '2025',

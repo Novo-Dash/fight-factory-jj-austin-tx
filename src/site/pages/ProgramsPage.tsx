@@ -32,7 +32,7 @@ function ProgramBlock({
   n: string
   label: string
   flip?: boolean
-  photos: { src: string; alt: string }[]
+  photos: { src: string; alt: string; pos?: string }[]
 }) {
   const { openModal } = useModal()
 
@@ -69,7 +69,7 @@ function ProgramBlock({
               delay={i * 90}
               className={i === 0 ? 'h-[58vw] max-h-[420px] lg:h-[26rem]' : 'h-[34vw] max-h-[240px] lg:h-[13rem]'}
             >
-              <img src={p.src} alt={p.alt} loading="lazy" />
+              <img src={p.src} alt={p.alt} loading="lazy" style={p.pos ? { objectPosition: p.pos } : undefined} />
             </Uncover>
           ))}
         </div>
@@ -204,8 +204,10 @@ export function ProgramsPage() {
         n="01"
         label="Adults · 13 and up"
         photos={[
-          { src: '/site/programs/adults-gi.webp', alt: 'Adults gi class training on the main mat' },
-          { src: '/site/programs/adults-nogi.webp', alt: 'A no-gi round in rash guards and shorts' },
+          // pos: entre 768 e 900 a caixa deita e cortava a fileira de cabecas.
+          { src: '/site/programs/adults-gi.webp', alt: 'Adults gi class training on the main mat', pos: '50% 13%' },
+          // pos: duas pessoas em planos diferentes; 66% mantem o rosto de baixo inteiro.
+          { src: '/site/programs/adults-nogi.webp', alt: 'A no-gi round in rash guards and shorts', pos: '50% 66%' },
         ]}
       />
 
@@ -220,7 +222,8 @@ export function ProgramsPage() {
         flip
         photos={[
           { src: '/site/programs/kids-a.webp', alt: 'Children drilling in pairs during a kids class' },
-          { src: '/site/programs/kids-d.webp', alt: 'Two children shaking hands before a round' },
+          // pos: a 1024 a faixa cortava as criancas sentadas ao fundo.
+          { src: '/site/programs/kids-d.webp', alt: 'Two children shaking hands before a round', pos: '50% 71%' },
         ]}
       />
 

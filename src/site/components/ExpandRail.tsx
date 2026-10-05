@@ -15,6 +15,8 @@ import { Icon, type IconName } from './Icon'
  */
 
 export interface Panel {
+  /** object-position da foto, para o painel fechado (uma lâmina estreita). */
+  pos?: string
   id: string
   href: string
   eyebrow: string
@@ -53,6 +55,7 @@ export function ExpandRail({ panels }: { panels: Panel[] }) {
                 src={p.photo}
                 alt={p.alt}
                 loading="lazy"
+                style={p.pos ? { objectPosition: p.pos } : undefined}
                 className={`absolute inset-0 h-full w-full object-cover transition-[transform,opacity,filter] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
                   isActive
                     ? 'scale-100 opacity-100 grayscale-0'
@@ -152,7 +155,7 @@ export function ExpandRail({ panels }: { panels: Panel[] }) {
               {isOpen ? (
                 <div className="pb-6">
                   <a href={p.href} className="relative block aspect-[16/10] overflow-hidden bg-ink">
-                    <img src={p.photo} alt={p.alt} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                    <img src={p.photo} alt={p.alt} loading="lazy" style={p.pos ? { objectPosition: p.pos } : undefined} className="absolute inset-0 h-full w-full object-cover" />
                     <span
                       aria-hidden="true"
                       className="absolute inset-0"
