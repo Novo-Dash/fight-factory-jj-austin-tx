@@ -51,6 +51,24 @@ async function documents() {
   return found
 }
 
+
+/* ── Dois modelos de tracking convivem neste repo ─────────────────────────
+   A LP migrou para o kit `src/nd` em 24/09/2026: o `index.html` dela nao
+   tem mais os ids literais, tem o bloco `nd:tracking` com
+   `window.__ND = {pixel, ga4, ads, clarity}`, e o snippet chama
+   `fbq('init', n.pixel)` / `gtag('config', n.ga4)` lendo desse objeto.
+   O site institucional e o blog seguem com os ids escritos no HTML.
+
+   Procurar so o literal reprovava o documento do kit dizendo "no fbq('init')"
+   numa pagina cujo tracking esta certo. Entao: documento com `window.__ND`
+   e conferido PELO __ND, o resto pelo literal. O que nao muda e a regra —
+   todo documento tem de declarar os tres ids, e serem os do Supabase. */
+function ndBlock(source) {
+  const m = source.match(/window\.__ND\s*=\s*(\{[^<]*?\})\s*<\/script>/)
+  if (!m) return null
+  try { return JSON.parse(m[1]) } catch { return 'unparsable' }
+}
+
 const fails = []
 const notes = []
 const fail = (msg) => fails.push(msg)
@@ -71,6 +89,18 @@ const capi = existsSync(join(ROOT, 'api/capi.ts'))
    The page, the client module and the server mirror. A mismatch is the
    expensive one: it splits a funnel across two ad accounts. */
 for (const [file, source] of Object.entries(html)) {
+  const nd = ndBlock(source)
+  if (nd === 'unparsable') {
+    fail(`${file}: the nd:tracking block is not valid JSON, so no id reaches the page`)
+    continue
+  }
+  if (nd) {
+    /* Kit: o id vive no __ND e o snippet faz fbq('init', n.pixel). */
+    if (!nd.pixel) fail(`${file}: nd:tracking has no pixel, the page reports no PageView`)
+    else if (nd.pixel !== EXPECTED.pixel) fail(`${file}: pixel ${nd.pixel} is not ${EXPECTED.pixel}`)
+    if (!/fbq\('init'/.test(source)) fail(`${file}: nd:tracking is there but nothing calls fbq('init')`)
+    continue
+  }
   const ids = [...source.matchAll(/fbq\('init',\s*'(\d+)'\)/g)].map((m) => m[1])
   if (ids.length === 0) fail(`${file}: no fbq('init') call, the page reports no PageView`)
   for (const id of ids) {
@@ -91,6 +121,15 @@ if (capi === null) {
    for the site and the blog are written by hand and by a generator, which is
    exactly where one gets forgotten. */
 for (const [file, source] of Object.entries(html)) {
+  const nd = ndBlock(source)
+  if (nd && nd !== 'unparsable') {
+    /* Kit: o loader e montado do __ND, entao a asercao e sobre os valores. */
+    if (nd.ga4 !== EXPECTED.ga4) fail(`${file}: nd:tracking ga4 is ${nd.ga4 ?? 'missing'}, not ${EXPECTED.ga4}`)
+    if (nd.ads !== EXPECTED.ads) fail(`${file}: nd:tracking ads is ${nd.ads ?? 'missing'}, not ${EXPECTED.ads}`)
+    if (!/gtag\('config',\s*n\.ga4\)/.test(source)) fail(`${file}: nd:tracking has ga4 but nothing configures it`)
+    if (!/gtag\('config',\s*n\.ads\)/.test(source)) fail(`${file}: nd:tracking has ads but nothing configures it`)
+    continue
+  }
   if (!source.includes(`gtag/js?id=${EXPECTED.ga4}`)) {
     fail(`${file}: the gtag loader does not use ${EXPECTED.ga4}`)
   }
