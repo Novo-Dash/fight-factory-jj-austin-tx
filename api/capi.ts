@@ -11,6 +11,8 @@ const PIXEL_ID = '4326414901006955'
 const GRAPH_URL = `https://graph.facebook.com/v23.0/${PIXEL_ID}/events`
 
 type CapiBody = {
+  pixel_id?: string
+  pixel?: string
   event?: string
   event_id?: string
   params?: Record<string, unknown>
@@ -65,6 +67,19 @@ export default async function handler(
   const body: CapiBody = req.body ?? {}
   if (!body.event || !body.event_id) {
     res.status(400).json({ error: 'Missing event or event_id' })
+    return
+  }
+
+  /* Allow-list do pixel. O endpoint e publico: sem isto, qualquer um faz POST
+     e injeta evento no pixel do cliente, sujando a conta de anuncios e a
+     otimizacao da campanha. O destino nunca sai do PIXEL_ID (a URL do Graph e
+     montada dele, nao do corpo), entao a checagem e sobre o EMISSOR: quem diz
+     a qual pixel pertence tem de dizer o certo.
+     O kit `src/nd` manda `pixel_id`; o formulario do site nao manda nada, e
+     continua valendo. Declarar um pixel diferente e recusado. */
+  const claimed = body.pixel_id ?? body.pixel
+  if (claimed && claimed !== PIXEL_ID) {
+    res.status(400).json({ ok: false, error: 'Unknown pixel' })
     return
   }
 
