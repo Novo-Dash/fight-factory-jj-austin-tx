@@ -110,7 +110,7 @@ export function KidsFooter() {
             {/* Bottom bar */}
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', padding: '16px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
               <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem' }}>© 2026 Fight Factory Jiu-Jitsu · All rights reserved.</span>
-              <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem' }}>By Novo Dash</span>
+              <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem' }}>By <a href="https://lp.novodash.com/site?utm_source=fight-factory-jj-austin-tx&utm_medium=referral&utm_campaign=lp-footer" target="_blank" rel="noopener" style={{ color: 'inherit', textDecoration: 'none' }}>Novo Dash</a></span>
             </div>
           </div>
         </div>

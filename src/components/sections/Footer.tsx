@@ -209,7 +209,7 @@ export function Footer() {
                 © 2026 Fight Factory Jiu-Jitsu · All rights reserved
               </p>
               <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.75rem' }}>
-                By Novo Dash
+                By <a href="https://lp.novodash.com/site?utm_source=fight-factory-jj-austin-tx&utm_medium=referral&utm_campaign=lp-footer" target="_blank" rel="noopener" style={{ color: 'inherit', textDecoration: 'none' }}>Novo Dash</a>
               </p>
             </div>
           </div>
