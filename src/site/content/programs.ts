@@ -39,14 +39,14 @@ export const ADULTS: Program = {
       name: 'No-Gi · All Levels',
       note: 'Shorts and rash guard. Grips replaced by control.',
       days: 'Mon – Fri',
-      times: '7:00 AM · 11:00 AM · 12:00 PM · 6:15 PM · 7:15 PM',
+      times: '7:00 AM · 11:00 AM · 6:15 PM · 7:15 PM',
       track: 'nogi',
     },
     {
       name: 'White Belts Only',
       note: 'A room of first-timers. Nobody outranks anybody.',
       days: 'Friday',
-      times: '5:00 PM',
+      times: '5:15 PM',
       track: 'gi',
     },
     {
@@ -98,15 +98,15 @@ export const KIDS: Program = {
     {
       name: 'Kids Gi · Ages 7–12',
       note: 'Technique, drilling and controlled rounds.',
-      days: 'Mon · Wed · Thu',
+      days: 'Mon · Wed',
       times: '5:15 PM',
       track: 'kids',
     },
     {
-      name: 'Kids No-Gi · Ages 8+',
-      note: 'The no-gi block for the older group.',
-      days: 'Tuesday',
-      times: '5:00 PM',
+      name: 'Kids No-Gi',
+      note: 'Ages 8+ on Tuesday, ages 7–12 on Thursday.',
+      days: 'Tue · Thu',
+      times: '5:00 PM · 5:15 PM',
       track: 'kids',
     },
   ],
@@ -119,7 +119,7 @@ export const STARTING_POINTS = [
   {
     who: 'Never trained anything',
     pick: 'White Belts Only',
-    when: 'Friday, 5:00 PM',
+    when: 'Friday, 5:15 PM',
     why: 'A whole class of people on their first month. No upper belts watching.',
   },
   {
@@ -149,7 +149,7 @@ export const STARTING_POINTS = [
   {
     who: 'A child, 7 to 12',
     pick: 'Kids Gi · Ages 7–12',
-    when: 'Mon · Wed · Thu, 5:15 PM',
+    when: 'Mon · Wed, 5:15 PM',
     why: 'Real technique, with the character work built in.',
   },
 ]

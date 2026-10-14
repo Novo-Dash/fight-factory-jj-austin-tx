@@ -419,7 +419,7 @@ const PANELS: Panel[] = [
     href: '/programs#adults',
     eyebrow: 'First month',
     title: 'White\nBelts Only',
-    meta: 'Friday 5:00 PM',
+    meta: 'Friday 5:15 PM',
     photo: '/site/programs/adults-roll.webp',
     alt: 'Adults rolling in the gi on the main mat',
     // Na lâmina fechada o centro mostrava só pernas: 16% traz os rostos.

@@ -65,7 +65,6 @@ export const SLOTS: ClassSlot[] = [
   // ── Wednesday ──────────────────────────────────────────────────────────
   { day: 3, start: '7:00 AM', end: '8:00 AM', name: 'No-Gi', track: 'nogi', note: 'All levels' },
   { day: 3, start: '11:00 AM', end: '12:00 PM', name: 'Gi', track: 'gi', note: 'All levels' },
-  { day: 3, start: '12:00 PM', end: '1:00 PM', name: 'No-Gi', track: 'nogi', note: 'All levels' },
   { day: 3, start: '4:30 PM', end: '5:15 PM', name: 'Kids Gi', track: 'kids', note: 'Ages 4–6' },
   { day: 3, start: '5:15 PM', end: '6:00 PM', name: 'Kids Gi', track: 'kids', note: 'Ages 7–12' },
   { day: 3, start: '6:15 PM', end: '7:15 PM', name: 'Gi', track: 'gi', note: 'White & blue' },
@@ -76,13 +75,13 @@ export const SLOTS: ClassSlot[] = [
   { day: 4, start: '11:00 AM', end: '12:00 PM', name: 'No-Gi', track: 'nogi', note: 'All levels' },
   { day: 4, start: '12:30 PM', end: '1:30 PM', name: "Women's Class", track: 'womens' },
   { day: 4, start: '4:30 PM', end: '5:15 PM', name: 'Kids Gi', track: 'kids', note: 'Ages 4–6' },
-  { day: 4, start: '5:15 PM', end: '6:00 PM', name: 'Kids Gi', track: 'kids', note: 'Ages 7–12' },
+  { day: 4, start: '5:15 PM', end: '6:00 PM', name: 'Kids No-Gi', track: 'kids', note: 'Ages 7–12' },
   { day: 4, start: '6:15 PM', end: '7:15 PM', name: 'Gi', track: 'gi', note: 'All levels' },
   { day: 4, start: '7:15 PM', end: '8:15 PM', name: 'No-Gi', track: 'nogi', note: 'All levels' },
 
   // ── Friday ─────────────────────────────────────────────────────────────
   { day: 5, start: '11:00 AM', end: '12:00 PM', name: 'Gi', track: 'gi', note: 'All levels' },
-  { day: 5, start: '5:00 PM', end: '6:00 PM', name: 'Gi', track: 'gi', note: 'White belts only' },
+  { day: 5, start: '5:15 PM', end: '6:15 PM', name: 'Gi', track: 'gi', note: 'White belts only' },
   { day: 5, start: '6:15 PM', end: '7:15 PM', name: 'No-Gi', track: 'nogi', note: 'All levels' },
 
   // ── Saturday ───────────────────────────────────────────────────────────

@@ -21,7 +21,7 @@ import {
 const FAQ = [
   {
     q: 'Can I join if I have never trained before?',
-    a: 'Yes. Most people who walk in have never trained anything. Friday at 5:00 PM is a white-belts-only class, and every all-levels class pairs beginners deliberately.',
+    a: 'Yes. Most people who walk in have never trained anything. Friday at 5:15 PM is a white-belts-only class, and every all-levels class pairs beginners deliberately.',
   },
   {
     q: 'What should I wear to the trial class?',
@@ -33,7 +33,7 @@ const FAQ = [
   },
   {
     q: 'How old does a child need to be?',
-    a: 'Four. Ages 4–6 train Monday, Wednesday and Thursday at 4:30 PM; ages 7–12 at 5:15 PM the same days; and there is a no-gi class for 8 and up on Tuesday.',
+    a: 'Four. Ages 4–6 train Monday, Wednesday and Thursday at 4:30 PM; ages 7–12 at 5:15 PM the same days (Thursday is no-gi); and there is a no-gi class for 8 and up on Tuesday.',
   },
   {
     q: 'Do you have a women-only class?',
