@@ -54,6 +54,7 @@ export function fbqTrack(event: string, params?: Record<string, unknown>): void 
     body: JSON.stringify({
       event,
       event_id: eventId,
+      pixel_id: PIXEL_ID, // o /api/capi do kit recusa evento sem pixel declarado
       params,
       url: window.location.href,
       fbp: getFbp(), // cookie _fbp (§7.6.3)

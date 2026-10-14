@@ -154,3 +154,7 @@ body {
   --nd-display-weight: 400;
   --nd-logo-filter: brightness(0) invert(1);
 }
+
+/* Tela de sucesso do kit sem botão nenhum (regra da casa; o kit não tem flag). O X fecha. */
+.nd .nd-details ~ .nd-button,
+.nd .nd-another { display: none; }

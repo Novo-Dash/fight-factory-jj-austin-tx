@@ -141,7 +141,7 @@ export function BookingModal({ isOpen, onClose, kidsMode }: BookingModalProps) {
               style={{ filter: 'brightness(0)' }}
             />
           </div>
-          <BookingForm onDone={onClose} kidsMode={kidsMode} />
+          <BookingForm kidsMode={kidsMode} />
         </div>
       </div>
     </div>,

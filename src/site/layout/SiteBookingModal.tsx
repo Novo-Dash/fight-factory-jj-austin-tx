@@ -108,7 +108,7 @@ export function SiteBookingModal({ isOpen, onClose }: { isOpen: boolean; onClose
               className="h-6 w-auto"
             />
           </div>
-          <BookingForm onDone={onClose} source={SITE_SOURCE} />
+          <BookingForm source={SITE_SOURCE} />
         </div>
       </div>
     </div>,

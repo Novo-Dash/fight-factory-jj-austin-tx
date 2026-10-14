@@ -11,6 +11,7 @@
   --nd-error: #b42318;
   --nd-radius: 12px;
   --nd-button-radius: 999px;
+  --nd-dialog-radius: 24px;
   --nd-font: inherit;
   --nd-font-display: inherit;
   --nd-display-case: none;
@@ -32,12 +33,12 @@
 
 /* shell: modal and /book share it */
 .nd-overlay {
-  position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center;
+  position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center;
   padding: 12px; background: rgb(0 0 0 / 0.6); backdrop-filter: blur(4px); overflow-y: auto;
 }
 .nd-dialog {
   position: relative; display: flex; flex-direction: column; width: 100%; max-width: 940px; max-height: calc(100dvh - 24px);
-  background: var(--nd-bg); border-radius: 20px; overflow: hidden; outline: none; box-shadow: 0 32px 80px rgb(0 0 0 / 0.35);
+  background: var(--nd-bg); border-radius: min(var(--nd-dialog-radius), 20px); overflow: hidden; outline: none; box-shadow: 0 32px 80px rgb(0 0 0 / 0.35);
 }
 .nd-close {
   position: absolute; top: 14px; right: 14px; z-index: 2; display: grid; place-items: center; width: 40px; height: 40px;
@@ -50,7 +51,7 @@
 .is-page .nd-scroll { overflow: visible; }
 @media (min-width: 640px) {
   .nd-overlay { padding: 24px; }
-  .nd-dialog { max-height: 90dvh; border-radius: 24px; }
+  .nd-dialog { max-height: 90dvh; border-radius: var(--nd-dialog-radius); }
   .nd-scroll { padding: 32px 36px 36px; }
   .nd-page { align-items: center; padding: 40px 24px; }
 }
@@ -176,6 +177,8 @@
 .nd-button:hover:not(:disabled) { filter: brightness(1.08); }
 .nd-button:active:not(:disabled) { transform: translateY(1px); }
 .nd-button:disabled { background: var(--nd-surface); color: var(--nd-muted); cursor: not-allowed; }
+/* "Book another child": the link style, centred under the main button */
+.nd-another { margin: 0 auto; }
 .nd-link {
   margin-left: auto; padding: 4px 0; border: 0; background: none; color: var(--nd-ink); font: inherit;
   font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; cursor: pointer;

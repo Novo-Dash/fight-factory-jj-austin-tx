@@ -3,10 +3,9 @@ import type { BookingData } from './types'
 
 interface SuccessProps {
   data: BookingData
-  onDone: () => void
 }
 
-export function Success({ data, onDone }: SuccessProps) {
+export function Success({ data }: SuccessProps) {
   return (
     <div className="p-8 text-center">
       <div
@@ -48,15 +47,6 @@ export function Success({ data, onDone }: SuccessProps) {
           Open in Maps →
         </span>
       </a>
-
-      <button
-        type="button"
-        onClick={onDone}
-        className="w-full bg-gradient-to-br from-[#262626] to-[#0A0A0A] hover:from-[#333333] hover:to-[#1A1A1A] text-white font-semibold py-3.5 rounded-full transition-all duration-200 hover:scale-[1.01] cursor-pointer min-h-[44px]"
-        style={{ fontSize: '16px' }}
-      >
-        Done
-      </button>
     </div>
   )
 }

@@ -112,8 +112,11 @@ if (!analytics.includes(`'${EXPECTED.pixel}'`)) {
 }
 if (capi === null) {
   fail('api/capi.ts is missing, so no event is mirrored into the Conversions API')
-} else if (!capi.includes(`'${EXPECTED.pixel}'`)) {
-  fail(`api/capi.ts: PIXEL_ID is not ${EXPECTED.pixel}`)
+} else if (!capi.includes("from '../src/nd/client.js'")) {
+  fail('api/capi.ts does not read its pixel allow-list from src/nd/client.ts')
+} else if (!(await readFile(join(ROOT, 'src/nd/client.ts'), 'utf8')).includes(`"pixel": "${EXPECTED.pixel}"`)) {
+  /* O CAPI do kit só aceita os pixels do client.ts: outro id ali derruba o espelho do site. */
+  fail(`src/nd/client.ts: tracking.pixel is not ${EXPECTED.pixel}`)
 }
 
 /* ── 2. GA4 and Ads on every document ─────────────────────────────────────

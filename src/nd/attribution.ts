@@ -1,3 +1,5 @@
+import type { Country } from './types'
+
 const KEY = 'nd_attribution'
 const LANDING_KEY = 'nd_landing'
 const LANDING_URL_MAX = 1000
@@ -70,16 +72,34 @@ export function isGhlReturnVisit(): boolean {
   return /[?&](full_name|email|phone)=/.test(a.landing_url ?? window.location.href)
 }
 
-export function prefillFromUrl() {
+export function prefillFromUrl(country: Country = 'US') {
   const params = new URLSearchParams(window.location.search)
   return {
     fullName: clean(params.get('full_name')) ?? '',
     email: clean(params.get('email')) ?? '',
-    phone: formatPhone(clean(params.get('phone')) ?? ''),
+    phone: formatPhone(clean(params.get('phone')) ?? '', country),
   }
 }
 
-export function formatPhone(raw: string) {
+// Phone rules per academy.country. ponytail: US and GB only; a third country is one more branch in each helper.
+export const PHONE_PLACEHOLDER: Record<Country, string> = { US: '(555) 555-0100', GB: '07123 456789' }
+export const PHONE_ERROR: Record<Country, string> = {
+  US: 'Please enter a 10 digit phone number.',
+  GB: 'Please enter a valid UK phone number.',
+}
+
+/** UK digits without the trunk 0 or the 44: 9 or 10 of them ("07415 635940", "+44 7415 635940", "020 7946 0000"). */
+const ukNational = (digits: string) => (digits.startsWith('44') ? digits.slice(2) : digits.startsWith('0') ? digits.slice(1) : digits)
+
+export function isPhone(raw: string, country: Country = 'US') {
+  const digits = raw.replace(/\D/g, '')
+  if (country === 'GB') return /^\d{9,10}$/.test(ukNational(digits))
+  return digits.length >= 10
+}
+
+export function formatPhone(raw: string, country: Country = 'US') {
+  // GB: typed as they write it; GHL links bring E.164 (+44…), shown back in the national 0… form.
+  if (country === 'GB') return raw.replace(/^\s*\+?44\s*/, '0').replace(/[^\d ]/g, '').slice(0, 14)
   const digits = raw.replace(/\D/g, '')
   const ten = (digits.length === 11 && digits.startsWith('1') ? digits.slice(1) : digits).slice(0, 10)
   if (ten.length < 4) return ten
@@ -87,8 +107,9 @@ export function formatPhone(raw: string) {
   return `(${ten.slice(0, 3)}) ${ten.slice(3, 6)}-${ten.slice(6)}`
 }
 
-export function toE164(raw: string) {
+export function toE164(raw: string, country: Country = 'US') {
   const digits = raw.replace(/\D/g, '')
+  if (country === 'GB') return digits ? `+44${ukNational(digits)}` : ''
   if (digits.length === 10) return `+1${digits}`
   if (digits.length === 11 && digits.startsWith('1')) return `+${digits}`
   return digits ? `+${digits}` : ''

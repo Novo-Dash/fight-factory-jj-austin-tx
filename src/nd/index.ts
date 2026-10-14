@@ -1,3 +1,4 @@
-export { BookingForm, BookingProvider, BookPage, useBooking } from './Booking'
+export { BookingForm, BookingProvider, BookPage, useBooking, type PaymentProps } from './Booking'
 export { fetchPrograms, groupPrograms, labelOf, shortName, timeLabel, type Program } from './programs'
-export { client } from './config'
+export { client, units, unitOf } from './config'
+export { useSchedule, weeklySchedule, type ScheduleDay, type ScheduleEntry } from './schedule'

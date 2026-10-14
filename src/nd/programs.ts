@@ -1,5 +1,5 @@
-import { PROGRAMS_URL, client } from './config'
-import type { Audience } from './types'
+import { PROGRAMS_URL, client, units } from './config'
+import type { Audience, Client, Country } from './types'
 
 // Classes and open times, live from the Novo Dash app (the academy's schedule,
 // minus the starts already full in GHL). Nothing about the class list is
@@ -16,10 +16,15 @@ export type Program = {
   group: string | null
   /** "YYYY-MM-DD" -> ["HH:MM"], in the academy's timezone. */
   slots: Record<string, string[]>
+  /** Class length in minutes, from the app. */
+  duration: number | null
+  /** Weekly grid from the app (0 = Sunday), for schedule sections: every start, full or not. */
+  weekly: { day: number; from: string; to: string | null }[]
 }
 
-const { programOverrides, retiredSlots } = client.booking
-const retired = new Set(retiredSlots)
+// Calendar ids are unique across GHL sub-accounts, so one map serves every unit of the LP.
+const programOverrides: Client['booking']['programOverrides'] = Object.assign({}, ...Object.values(units).map((u) => u.booking.programOverrides))
+const retired = new Set(Object.values(units).flatMap((u) => u.booking.retiredSlots))
 
 // Each ISO carries the academy's offset: slice the text, never go through Date.
 function normalizeSlots(raw: unknown, calendarId: string): Record<string, string[]> {
@@ -37,23 +42,28 @@ function normalizeSlots(raw: unknown, calendarId: string): Record<string, string
   return out
 }
 
-let inflight: Promise<Program[]> | null = null
+const inflight = new Map<string, Promise<Program[]>>()
 
-/** Once per session, shared by every consumer (modal, /book, schedule grids). */
-export function fetchPrograms(audience: Audience | null = client.booking.audience): Promise<Program[]> {
-  inflight ??= load().catch((err) => {
-    inflight = null
-    throw err
-  })
-  return inflight.then((all) => {
-    const narrowed = audience ? all.filter((p) => p.audience === audience) : all
-    return narrowed.length ? narrowed : all
+/** Once per session and location, shared by every consumer (modal, /book, schedule grids). */
+export function fetchPrograms(audience: Audience | null = client.booking.audience, c: Client = client): Promise<Program[]> {
+  const loc = c.ghl.locationId
+  if (!inflight.has(loc)) {
+    inflight.set(loc, load(loc).catch((err) => {
+      inflight.delete(loc)
+      throw err
+    }))
+  }
+  return inflight.get(loc)!.then((all) => {
+    // A kids page with no open kids class falls back to lead capture, never to adult classes.
+    return audience ? all.filter((p) => p.audience === audience) : all
   })
 }
 
-async function load(): Promise<Program[]> {
-  if (!client.ghl.locationId) return []
-  const res = await fetch(`${PROGRAMS_URL}?location_id=${encodeURIComponent(client.ghl.locationId)}`)
+async function load(locationId: string): Promise<Program[]> {
+  if (!locationId) return []
+  const url = `${PROGRAMS_URL}?location_id=${encodeURIComponent(locationId)}`
+  // One retry before the adults/kids fallback: a cold start or a slow GHL call should not cost the calendar.
+  const res = await fetch(url).then((r) => (r.ok ? r : Promise.reject(r))).catch(() => new Promise<Response>((ok) => setTimeout(() => ok(fetch(url)), 1500)))
   if (!res.ok) throw new Error(`get_programs responded ${res.status}`)
   const { programs } = (await res.json()) as { programs?: Array<Record<string, unknown>> }
   return (Array.isArray(programs) ? programs : [])
@@ -65,21 +75,43 @@ async function load(): Promise<Program[]> {
       audience: p.audience === 'kids' ? 'kids' : 'adults',
       group: typeof p.group === 'string' && p.group.trim() ? p.group.trim() : null,
       slots: normalizeSlots(p.slots, p.calendar_id as string),
+      duration: typeof p.duration_minutes === 'number' ? p.duration_minutes : null,
+      weekly: (Array.isArray(p.weekly) ? (p.weekly as Array<Record<string, unknown>>) : [])
+        .filter((w) => typeof w.day === 'number' && typeof w.from === 'string')
+        .map((w) => ({ day: w.day as number, from: (w.from as string).slice(0, 5), to: typeof w.to === 'string' ? w.to.slice(0, 5) : null })),
     }))
 }
+
+/** The academy's note for one class, shown on the time step. */
+export const noteOf = (p: Program | null) => (p ? programOverrides[p.calendar_id]?.note ?? null : null)
+
+/** A paid class the academy also books here (drop-in): its texts never say "free". */
+export const isPaid = (p: Program | null) => Boolean(p && programOverrides[p.calendar_id]?.paid)
+
+/** A class the academy marked "Waitlist" in its name: the lead goes in, no booking is offered. */
+export const isWaitlist = (p: Program | null) => Boolean(p && /waitlist/i.test(p.name))
 
 /** Display label only; webhooks carry the raw GHL name. */
 export function labelOf(calendarId: string, name: string) {
   return programOverrides[calendarId]?.label ?? name
 }
 
+/** Drops only the age in parentheses (ageHint shows it below); "(Gi)" stays in the name. */
 export function shortName(p: Program) {
-  return labelOf(p.calendar_id, p.name).replace(/\s*\([^)]*\)\s*/g, ' ').trim()
+  return labelOf(p.calendar_id, p.name).replace(/\s*\([^)]*\d[^)]*\)\s*/g, ' ').trim()
 }
 
-/** "Little Champions (4-6 years old)" -> "4-6 years old". */
+/** Hint under the class name: its age, plus "60 min class" when the LP shows lengths (booking.showDuration).
+ *  ponytail: read from the first unit, LP-wide; per unit if two units ever differ. */
+export function optionHint(p: Program) {
+  const parts = [ageHint(p), client.booking.showDuration && p.duration ? `${p.duration} min class` : null].filter(Boolean)
+  return parts.length ? parts.join(' · ') : null
+}
+
+/** "Little Champions (4-6 years old)" -> "4-6 years old". The label's age wins (the academy asked for it); else GHL's. */
 export function ageHint(p: Program) {
-  return p.name.match(/\(([^)]*\d[^)]*)\)/)?.[1] ?? null
+  const age = /\(([^)]*\d[^)]*)\)/
+  return labelOf(p.calendar_id, p.name).match(age)?.[1] ?? p.name.match(age)?.[1] ?? null
 }
 
 const GROUP_ORDER = [/adult/i, /kid|teen|youth|champion/i]
@@ -107,8 +139,10 @@ export const parseKey = (key: string) => {
   const [y, m, d] = key.split('-').map(Number)
   return new Date(y, m - 1, d)
 }
-export const longDate = (key: string) =>
-  parseKey(key).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+/** "Monday, September 29" (US) / "Monday 29 September" (GB). */
+export const locale = (country?: Country) => (country === 'GB' ? 'en-GB' : 'en-US')
+export const longDate = (key: string, country?: Country) =>
+  parseKey(key).toLocaleDateString(locale(country), { weekday: 'long', month: 'long', day: 'numeric' })
 /** "17:30" -> "5:30 PM": the exact format Webhook 2 expects. */
 export function timeLabel(hhmm: string) {
   const [h, m] = hhmm.split(':').map(Number)

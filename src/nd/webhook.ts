@@ -1,7 +1,7 @@
 import { getAttribution, getSourceLabel, isGhlReturnVisit, toE164 } from './attribution'
-import { BOOKING_WEBHOOK, LEAD_WEBHOOK, client } from './config'
+import { BOOKING_WEBHOOK, client, leadWebhookOf } from './config'
 import { timeLabel, type Program } from './programs'
-import type { Audience } from './types'
+import type { Audience, Client } from './types'
 
 export type BookingData = {
   fullName: string
@@ -27,12 +27,12 @@ function post(url: string, payload: unknown) {
 }
 
 /** Webhook 1: the lead, the moment someone leaves step 1. */
-export function sendLead(data: BookingData, program: Program | null, source: string) {
+export function sendLead(data: BookingData, program: Program | null, source: string, extra: Record<string, unknown> = {}, c: Client = client) {
   if (isGhlReturnVisit()) return
   const [first = '', ...rest] = data.fullName.trim().split(/\s+/)
   const audience = program?.audience ?? data.preferredAudience
   const child = data.childName.trim()
-  post(LEAD_WEBHOOK, {
+  post(leadWebhookOf(c), {
     event: 'lead_captured',
     name: data.fullName.trim(),
     firstName: first,
@@ -40,12 +40,13 @@ export function sendLead(data: BookingData, program: Program | null, source: str
     ...(audience === 'kids' && child ? { child_name: child } : {}),
     email: data.email.trim(),
     phone: data.phone.trim(),
-    phoneE164: toE164(data.phone),
+    phoneE164: toE164(data.phone, c.academy.country),
     program: program?.name ?? '',
     audience,
     submittedAt: new Date().toISOString(),
     source: getSourceLabel(source),
     ...getAttribution(),
+    ...extra,
   })
 }
 
@@ -53,7 +54,7 @@ export function sendLead(data: BookingData, program: Program | null, source: str
  * Webhook 2: the booking. Fixed contract with the n8n flow: do not add or
  * remove fields. Only sent for a real calendar and a real slot.
  */
-export function sendBooking(data: BookingData, program: Program, source: string) {
+export function sendBooking(data: BookingData, program: Program, source: string, c: Client = client) {
   const child = data.childName.trim()
   post(BOOKING_WEBHOOK, {
     parent_name: data.fullName.trim(),
@@ -61,7 +62,7 @@ export function sendBooking(data: BookingData, program: Program, source: string)
     email: data.email.trim(),
     phone: data.phone.trim(),
     calendar_id: program.calendar_id,
-    location_id: client.ghl.locationId,
+    location_id: c.ghl.locationId,
     stage: 'appointment_selected',
     appointment_date: data.date,
     appointment_time: timeLabel(data.time),

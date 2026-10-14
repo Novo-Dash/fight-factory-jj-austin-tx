@@ -65,14 +65,13 @@ function makeInitial(): BookingData {
 
 interface BookingFormProps {
   /** Chamado após o reset, ao concluir. No modal: fecha. No /book: undefined (fica na Etapa 1). */
-  onDone?: () => void
   /** /kids e /back-to-school: restringe as turmas visíveis às de kids. */
   kidsMode?: boolean
   /** Rótulo de origem gravado nos 2 webhooks. Omitido = landing page. */
   source?: string
 }
 
-export function BookingForm({ onDone, kidsMode, source }: BookingFormProps) {
+export function BookingForm({ kidsMode, source }: BookingFormProps) {
   const [step, setStep] = useState<Step>(1)
   const [data, setData] = useState<BookingData>(() => makeInitial())
   // Loading marcado ANTES do primeiro paint (§8 item 15).
@@ -127,14 +126,7 @@ export function BookingForm({ onDone, kidsMode, source }: BookingFormProps) {
     setStep('success')
   }
 
-  function handleDone() {
-    setData(makeInitial())
-    setStep(1)
-    leadSent.current = false
-    onDone?.()
-  }
-
-  if (step === 'success') return <Success data={data} onDone={handleDone} />
+  if (step === 'success') return <Success data={data} />
   if (step === 2) {
     return <Step2Schedule data={data} onChange={patch} onBack={() => setStep(1)} onConfirm={handleConfirm} />
   }
