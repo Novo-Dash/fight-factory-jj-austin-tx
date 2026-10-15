@@ -1,0 +1,134 @@
+/* ===========================================================================
+   Halloween: camada tematica provisoria da Fight Factory (variacao C, navbar:
+   varal de bandeirinhas e abobora pendurada, portada da Abdias).
+   Sobreposta a pagina e inerte ao ponteiro: nao altera cor, tipo, texto,
+   imagem, secao, botao nem layout. Fora da arvore de acessibilidade.
+
+   CORES: toda cor da camada mora aqui. Dois modos, escolhidos pela constante
+   PALETTE no topo do HalloweenLayer:
+   - .hw (padrao "halloween"): laranja de abobora e preto classicos; o que na
+     Abdias era a tinta da marca (#1d1d1f) virou a tinta da Fight Factory
+     (#0A0A0A) e a ponteira da faixa preta usa o vermelho dela (#CC0000).
+   - .hw[data-hw-palette='client']: so a paleta do cliente (tinta, vermelho
+     #CC0000 e seus tons, branco, cinzas do botao).
+   O header e transparente sobre o video escuro no topo e branco 75% rolado:
+   peca escura leva halo claro (.hw-halo) e o fio e cinza medio, para ler
+   nos dois estados.
+   =========================================================================== */
+.hw {
+  --hw-ink: #0A0A0A;
+  --hw-edge: #f4f4f8;
+  --hw-halo: rgb(255 255 255 / 0.7);
+  --hw-string: #7a7a80;
+  --hw-eye: #ffb13b;
+  --hw-accent: #CC0000;
+  --hw-pumpkin-hi: #ffc277;
+  --hw-pumpkin: #ff8a1f;
+  --hw-pumpkin-side: #ff9d3d;
+  --hw-pumpkin-mid: #e2650e;
+  --hw-pumpkin-lo: #c24e07;
+  --hw-pumpkin-deep: #8a3104;
+  --hw-glow-hi: #fff6c4;
+  --hw-glow: #ffb41a;
+  --hw-stem: #5d7a2c;
+  --hw-leaf: #4f7330;
+  --hw-fx-bg: var(--hw-pumpkin);
+  --hw-fx-ink: var(--hw-ink);
+  --hw-fx-edge: #ffffff;
+}
+.hw[data-hw-palette='client'] {
+  --hw-ink: #0A0A0A;
+  --hw-edge: #ffffff;
+  --hw-string: #999999;
+  --hw-eye: #ff3b3b;
+  --hw-accent: #CC0000;
+  --hw-pumpkin-hi: #ff6a6a;
+  --hw-pumpkin: #CC0000;
+  --hw-pumpkin-side: #e01f1f;
+  --hw-pumpkin-mid: #B30000;
+  --hw-pumpkin-lo: #8B0000;
+  --hw-pumpkin-deep: #4d0000;
+  --hw-glow-hi: #ffffff;
+  --hw-glow: #EFEFEF;
+  --hw-stem: #262626;
+  --hw-leaf: #333333;
+  --hw-fx-bg: #CC0000;
+  --hw-fx-ink: #ffffff;
+  --hw-fx-edge: #ffffff;
+}
+
+.hw {
+  position: fixed; inset: 0; z-index: 2147483000; overflow: hidden;
+  pointer-events: none; user-select: none;
+  /* altura do header medida: 72px desktop (md:h-[72px]), 56px celular (h-14) */
+  --hw-safe-top: 72px;
+  transition: opacity 180ms linear;
+}
+.hw * { pointer-events: none !important; }
+.hw[data-hw-hidden='true'] { opacity: 0; }
+
+/* peca escura sobre o header transparente do topo (video escuro): halo claro */
+.hw-halo { filter: drop-shadow(0 0 1px var(--hw-halo)) drop-shadow(0 0 0.5px var(--hw-halo)); }
+
+/* teia: pathLength=1 + dasharray 1 = se tece na entrada; espelho e balanco em
+   torno do CENTRO */
+.hw-webwrap { position: absolute; top: 0; }
+.hw-webwrap--tl { left: 0; }
+.hw-webwrap--tr { right: 0; }
+.hw-web { display: block; width: 100%; height: 100%; }
+.hw-web path { stroke-dasharray: 1; }
+.hw-web--tl { transform: rotate(var(--hw-sway, 0deg)); transform-origin: 50% 50%; }
+.hw-web--tr { transform: scaleX(-1) rotate(var(--hw-sway, 0deg)); transform-origin: 50% 50%; }
+
+/* --- detalhe da navbar: posicionado pelo JS ao lado do botao do header ---------- */
+.hw-bat { position: absolute; display: block; }
+.hw-bat svg { display: block; width: 100%; height: auto; overflow: visible; }
+.hw-nav { position: absolute; display: block; overflow: visible; }
+.hw-nav--bat { width: 34px; }
+
+/* --- hover no CTA: abas em pilula atras do botao, escondidas por mascara ---------- */
+.hw-fx { position: absolute; left: 0; top: 0; width: 0; height: 0; opacity: 0; font-family: inherit; }
+.hw-fx-mask {
+  position: absolute; left: -40px; top: -64px; right: -40px; bottom: -64px;
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+}
+.hw-fx-tab {
+  position: absolute; display: flex; align-items: center; gap: 7px; border-radius: 999px;
+  background: linear-gradient(rgb(255 255 255 / 0.18), rgb(0 0 0 / 0.05)), var(--hw-fx-bg);
+  color: var(--hw-fx-ink); font-weight: 700; font-size: 12px; letter-spacing: 0.01em; white-space: nowrap;
+  border: 1.5px solid var(--hw-fx-edge); box-shadow: 0 1px 1px rgb(0 0 0 / 0.05), 0 8px 12px rgb(0 0 0 / 0.14);
+  will-change: transform, opacity, filter;
+}
+.hw-fx-tab--top { height: 44px; padding: 0 10px 7px; align-items: flex-start; padding-top: 5px; }
+.hw-fx-tab--bot { height: 40px; padding: 10px 14px 0; align-items: flex-end; padding-bottom: 7px; }
+.hw-fx-tab svg { width: 26px; height: 26px; display: block; overflow: visible; }
+.hw-fx-tab--bot svg { width: 18px; height: 18px; display: none; }
+.hw-fx--low .hw-fx-tab--top { display: none; }
+.hw-fx--low .hw-fx-tab--bot svg { display: block; }
+
+/* --- a barra: faixa da altura do header, o varal pendura logo abaixo dela -------- */
+.hw-bar { position: absolute; left: 0; right: 0; top: 0; height: var(--hw-safe-top); --hw-flag-w: 22px; }
+.hw-string { position: absolute; left: 0; top: 100%; display: block; overflow: visible; }
+.hw-string path { stroke-dasharray: 1; }
+.hw-flag { position: absolute; display: block; margin-left: calc(var(--hw-flag-w) / -2); transform-origin: 50% 0; }
+.hw-flag-tilt { display: block; transform-origin: 50% 0; }
+.hw-flag svg { display: block; width: 100%; height: auto; overflow: visible; }
+.hw-perch { position: absolute; width: 38px; margin: -16px 0 0 -19px; }
+.hw-perch svg { display: block; width: 100%; height: auto; overflow: visible; }
+.hw-hpk { position: absolute; width: 54px; margin: -3px 0 0 -30px; }
+.hw-hpk svg { display: block; width: 100%; height: auto; overflow: visible; }
+.hw-dangle { position: absolute; width: 22px; margin-left: -11px; }
+.hw-dangle svg { display: block; width: 100%; height: auto; }
+
+@media (max-width: 767px) {
+  .hw { --hw-safe-top: 56px; }
+  .hw-bar { --hw-flag-w: 16px; }
+  .hw-perch { width: 30px; margin: -13px 0 0 -15px; }
+  .hw-hpk { width: 38px; margin: -2px 0 0 -21px; }
+  .hw-dangle { width: 15px; margin-left: -7.5px; }
+  .hw-nav--bat { width: 26px; }
+}
+
+@media (prefers-reduced-motion: reduce) { .hw { transition: none; } }
+@media print { .hw { display: none; } }

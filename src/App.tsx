@@ -14,6 +14,8 @@ import {
   FAQ,
 } from './components/sections'
 import { Marquee } from './components/ui/Marquee'
+/* Halloween: camada decorativa provisoria, so nesta pagina; sai tirando estas 2 linhas e src/halloween */
+import HalloweenLayer from './halloween/HalloweenLayer'
 
 export default function App() {
   useScrollDepth()
@@ -34,6 +36,7 @@ export default function App() {
         <FAQ />
       </main>
       <Footer />
+      <HalloweenLayer />
     </BookingProvider>
   )
 }
