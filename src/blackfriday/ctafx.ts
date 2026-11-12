@@ -4,7 +4,7 @@ import { gsap } from "gsap";
    Black Friday: o efeito dos botões que levam ao formulário, o mesmo da
    roupagem de Halloween (src/halloween/ctafx.ts no branch halloween-2026,
    portado da Ares). Duas abas em pílula saem de trás do botão: a etiqueta da
-   Black Friday em cima, à esquerda, e a oferta embaixo, à direita. A máscara
+   Black Friday em cima e a oferta embaixo, as duas centradas. A máscara
    tem a forma exata do botão; o botão só recebe pointerenter/leave e o clique
    segue igual. O botão do header fica de fora. Porte da Alliance Carmel
    Mountain (origin/main), pedido "estilo Carmel".
@@ -80,10 +80,11 @@ export function mountCtaFx(root: HTMLElement, c: Cond) {
     const url = `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`;
     mask.style.setProperty("-webkit-mask-image", url);
     mask.style.maskImage = url;
-    /* abas deslocadas para os lados, comecando onde a curva do botao termina */
-    top.style.left = `${PAD_X + Math.max(6, R - 6)}px`;
+    /* abas centradas no botao (Lucas, 12/11: "deixa centralizados os boxes", antes eram
+       uma a esquerda e outra a direita) */
+    top.style.left = `${PAD_X + (w - top.offsetWidth) / 2}px`;
     top.style.top = `${PAD_Y + tuck - top.offsetHeight}px`;
-    bot.style.right = `${PAD_X + Math.max(6, R - 6)}px`;
+    bot.style.left = `${PAD_X + (w - bot.offsetWidth) / 2}px`;
     bot.style.top = `${PAD_Y + h - tuck}px`;
   };
   const follow = () => { if (cur) fit(); };
@@ -91,8 +92,12 @@ export function mountCtaFx(root: HTMLElement, c: Cond) {
   /* celular: a camada fixa nao acompanha o botao durante a rolagem por inercia;
      rolou, a gaveta se recolhe na hora e o ciclo so volta quando a rolagem para */
   let scrolling = 0;
-  const onScroll = () => {
+  const onScroll = (e: Event) => {
     if (c.hover) return;
+    /* so a rolagem que move um CTA: o carrossel de depoimentos rola sozinho (60 eventos/s)
+       e, contado como rolagem da pagina, a aba nunca abria no celular (bug de 12/11) */
+    const t = e.target;
+    if (t instanceof Element && !ctas.some((el) => t.contains(el))) return;
     if (cur) { tl.pause(0); gsap.set(fx, { opacity: 0 }); cur = null; }
     window.clearTimeout(scrolling);
     scrolling = window.setTimeout(() => { scrolling = 0; }, 160);

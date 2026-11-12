@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '../components/ui/Button'
 import { BF } from './offer'
-import { Gi, RashGuard } from './art'
 import './blackfriday.css'
 
 /* contagem regressiva até o fim da oferta, no relógio de quem visita */
@@ -67,11 +66,11 @@ export default function BfOffer() {
           {/* o kit: as duas peças, cada uma no seu quadro, e o selo do valor na emenda */}
           <figure className="bf-kit bf-rise" style={{ '--i': 1 } as React.CSSProperties}>
             <div className="bf-kit-tile bf-kit-tile--dark">
-              <Gi className="bf-kit-art" />
+              <img className="bf-kit-photo" src="/images/bf/gi-640.webp" srcSet="/images/bf/gi-640.webp 640w, /images/bf/gi-1000.webp 1000w" sizes="(min-width: 768px) 320px, 46vw" width="1000" height="1000" alt="White Fight Factory gi with a white belt" loading="lazy" decoding="async" />
               <span className="bf-kit-label">{BF.kit.gi}</span>
             </div>
             <div className="bf-kit-tile">
-              <RashGuard className="bf-kit-art" />
+              <img className="bf-kit-photo" src="/images/bf/rash-guard-640.webp" srcSet="/images/bf/rash-guard-640.webp 640w, /images/bf/rash-guard-1000.webp 1000w" sizes="(min-width: 768px) 320px, 46vw" width="1000" height="1000" alt="Black Fight Factory rash guard with red side panels" loading="lazy" decoding="async" />
               <span className="bf-kit-label">{BF.kit.rash}</span>
             </div>
             <figcaption className="bf-kit-seal">

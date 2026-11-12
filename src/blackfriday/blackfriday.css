@@ -227,7 +227,7 @@
   background: radial-gradient(120% 90% at 50% 20%, #2a2a2a, #0a0a0a 70%);
   box-shadow: none;
 }
-.bf-kit-art { position: absolute; inset: 8% 9% 12%; width: 82%; height: 80%; }
+.bf-kit-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .bf-kit-label {
   position: absolute;
   left: 12px;
@@ -523,3 +523,5 @@
 .bfx--sm .bfx-tab--top { display: none; }
 .bfx--sm .bfx-tab--bot { height: 27px; padding: 0 10px 6px; gap: 5px; }
 .bfx--sm .bfx-tab--bot .bf-glyph { display: block; width: 12px; height: 12px; }
+/* hero: a aba de cima (32px acima do botão) encostava na linha de números; respiro só durante a BF */
+.max-w-5xl.text-center > [data-book] { margin-top: 16px; }
