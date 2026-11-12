@@ -43,6 +43,8 @@ export function Button({
         className
       )}
       onClick={handleClick}
+      // Black Friday: marca os botões que abrem o form (abas da roupagem, src/blackfriday/ctafx.ts)
+      data-book={shouldOpenModal || undefined}
       {...props}
     >
       {children}
