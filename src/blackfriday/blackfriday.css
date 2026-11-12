@@ -263,17 +263,74 @@
 /* a matrícula e o botão */
 .bf-side { display: flex; flex-direction: column; gap: 16px; }
 .bf-enroll {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 28px;
+  gap: 22px;
   margin: 0;
   padding: 28px;
   border-radius: 24px;
-  background: var(--bf-ink);
+  background:
+    radial-gradient(90% 70% at 100% 0%, rgba(204, 0, 0, 0.32), transparent 60%),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 9px),
+    var(--bf-ink);
   color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 24px 48px -24px rgba(120, 0, 0, 0.55);
 }
+/* losango da marca, em marca d'água, sangrando no canto */
+.bf-enroll-mark {
+  position: absolute;
+  z-index: -1;
+  right: -70px;
+  bottom: -90px;
+  width: 340px;
+  height: 340px;
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.07);
+  stroke-width: 1.5;
+}
+.bf-enroll-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+/* selo redondo que gira devagar */
+.bf-stamp { flex: none; width: 104px; height: 104px; margin: -8px -6px 0 0; animation: bf-spin 26s linear infinite; }
+.bf-stamp-edge { fill: none; stroke: rgba(255, 255, 255, 0.28); stroke-width: 1; stroke-dasharray: 2 3; }
+.bf-stamp-text { fill: #fff; font: 600 10.5px var(--bf-body); letter-spacing: 0.2em; }
+.bf-stamp-dia { fill: var(--bf-red); }
+.bf-stamp-dia2 { fill: none; stroke: #fff; stroke-width: 2; }
+@keyframes bf-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .bf-stamp { animation: none; } }
+/* o recibo: picote de cupom com os dois recortes nas bordas, e o valor riscado */
+.bf-enroll-receipt {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0;
+  padding-top: 18px;
+  border-top: 2px dashed rgba(255, 255, 255, 0.22);
+  font: 600 13px/1 var(--bf-body);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #bdbdbd;
+}
+.bf-enroll-receipt::before,
+.bf-enroll-receipt::after {
+  content: '';
+  position: absolute;
+  top: -12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--bf-paper);
+}
+.bf-enroll-receipt::before { left: -39px; }
+.bf-enroll-receipt::after { right: -39px; }
+.bf-enroll-receipt i { flex: 1; align-self: center; height: 0; border-top: 1px dotted rgba(255, 255, 255, 0.3); }
+.bf-enroll-receipt s { font: var(--bf-display-weight) 26px/1 var(--bf-display); letter-spacing: 0.02em; color: #8a8a8a; text-decoration-color: var(--bf-accent-on-dark); text-decoration-thickness: 3px; }
+.bf-enroll-receipt b { font: var(--bf-display-weight) 26px/1 var(--bf-display); letter-spacing: 0.02em; color: var(--bf-accent-on-dark); }
 .bf-enroll-big { display: flex; align-items: baseline; gap: 14px; margin: 0; }
 .bf-enroll-big strong {
   font: var(--bf-display-weight) clamp(6rem, 11vw, 9.5rem)/0.82 var(--bf-display);
@@ -422,7 +479,12 @@
   .bf-kit-seal-name { font-size: 14px; }
   .bf-kit-seal-sub { margin-top: 4px; font-size: 7.5px; letter-spacing: 0.22em; }
   .bf-kit-seal > strong { font-size: 30px; }
-  .bf-enroll { padding: 22px; gap: 22px; border-radius: 20px; }
+  .bf-enroll { padding: 22px; gap: 20px; border-radius: 20px; }
+  .bf-stamp { width: 80px; height: 80px; }
+  .bf-enroll-mark { width: 260px; height: 260px; right: -60px; bottom: -70px; }
+  .bf-enroll-receipt { font-size: 11px; letter-spacing: 0.12em; }
+  .bf-enroll-receipt::before { left: -33px; }
+  .bf-enroll-receipt::after { right: -33px; }
   .bf-deadline { padding: 20px; border-radius: 20px; }
   .bf-cal { width: 78px; }
   .bf-cal strong { font-size: 44px; }

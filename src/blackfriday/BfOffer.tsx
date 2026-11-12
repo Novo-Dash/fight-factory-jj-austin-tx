@@ -82,13 +82,40 @@ export default function BfOffer() {
 
           <div className="bf-side">
             <article className="bf-enroll bf-rise" style={{ '--i': 2 } as React.CSSProperties} aria-label={`${BF.enrollment.value} ${BF.enrollment.label}, ${BF.enrollment.save}`}>
-              <p className="bf-tag bf-belt">
-                <span>{BF.enrollment.save}</span>
-                <i className="bf-rank" aria-hidden="true" />
-              </p>
+              {/* Lucas, 12/11: o cartão da direita com mais destaque. Losango da marca em
+                  marca d'água, selo girando, picote de cupom e o recibo com o valor riscado */}
+              <svg className="bf-enroll-mark" viewBox="0 0 200 200" aria-hidden="true">
+                <path d="M100 6 194 100 100 194 6 100Z" />
+                <path d="M100 34 166 100 100 166 34 100Z" />
+                <path d="M100 62 138 100 100 138 62 100Z" />
+              </svg>
+              <div className="bf-enroll-top">
+                <p className="bf-tag bf-belt">
+                  <span>{BF.enrollment.save}</span>
+                  <i className="bf-rank" aria-hidden="true" />
+                </p>
+                <svg className="bf-stamp" viewBox="0 0 120 120" aria-hidden="true">
+                  <defs>
+                    <path id="bf-stamp-ring" d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1-88 0" />
+                  </defs>
+                  <circle cx="60" cy="60" r="57" className="bf-stamp-edge" />
+                  <circle cx="60" cy="60" r="31" className="bf-stamp-edge" />
+                  <text className="bf-stamp-text">
+                    <textPath href="#bf-stamp-ring">BLACK FRIDAY · FIGHT FACTORY · BLACK FRIDAY · FIGHT FACTORY ·</textPath>
+                  </text>
+                  <path className="bf-stamp-dia" d="M60 40 80 60 60 80 40 60Z" />
+                  <path className="bf-stamp-dia2" d="M60 49 71 60 60 71 49 60Z" />
+                </svg>
+              </div>
               <p className="bf-enroll-big" aria-hidden="true">
                 <strong>{BF.enrollment.value}</strong>
                 <span>{BF.enrollment.label}</span>
+              </p>
+              <p className="bf-enroll-receipt" aria-hidden="true">
+                <span>{BF.enrollment.row}</span>
+                <i />
+                <s>{BF.enrollment.was}</s>
+                <b>{BF.enrollment.value}</b>
               </p>
             </article>
             <div className="bf-rise" style={{ '--i': 3 } as React.CSSProperties}>

@@ -19,7 +19,7 @@ export const BF = {
   sub: 'From now until Dec 2, new students join with $0 enrollment and get a starter kit worth $220: gi and rash guard.',
   // os benefícios da tarefa viram as peças da seção, cada um uma vez:
   // "$0 enrollment (save $175)" no cartão, "Starter kit worth $220" no selo do kit, "Only 20 spots" na faixa do prazo
-  enrollment: { value: '$0', label: 'enrollment', save: 'Save $175' },
+  enrollment: { value: '$0', label: 'enrollment', save: 'Save $175', was: '$175', row: 'Enrollment fee' },
   kit: { name: 'Starter kit', worth: '$220', gi: 'Gi', rash: 'Rash guard' },
   deadline: { endsAt, day: 'Wed', date: '2', month: 'Dec', lead: 'Black Friday ends Wednesday, Dec 2.' },
   // o selo do formulário: a oferta numa linha
