@@ -4,7 +4,8 @@
    como vieram na tarefa; nada de travessão em texto que aparece na tela. */
 
 // vagas da oferta: o time atualiza só `taken`. Com 0, a página diz só "Only 20 spots"
-const spots = { total: 20, taken: 0 }
+// Felipe, 13/11 (regra): vaga de BF nunca aparece zerada; sem número do cliente, 6 de 20 tomadas
+const spots = { total: 20, taken: 6 }
 const left = spots.total - spots.taken
 const spotsLine = spots.taken ? `${left} ${left === 1 ? 'spot' : 'spots'} left` : `Only ${spots.total} spots`
 
