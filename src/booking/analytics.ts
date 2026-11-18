@@ -45,7 +45,7 @@ export function fbqTrack(event: string, params?: Record<string, unknown>): void 
   if (typeof window === 'undefined') return
   const eventId = newEventId()
   if (typeof window.fbq === 'function') {
-    window.fbq('track', event, params ?? {}, { eventID: eventId })
+    window.fbq(event === 'ClickButton' ? 'trackCustom' : 'track', event, params ?? {}, { eventID: eventId })
   }
   fetch(CAPI_ENDPOINT, {
     method: 'POST',

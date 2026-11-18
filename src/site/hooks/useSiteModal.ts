@@ -8,6 +8,7 @@
  * kit, o site aqui. Migrar o site para o kit e tarefa separada.
  */
 import { createContext, useContext, useState, useCallback } from 'react'
+import { fbqTrack, ga4Event } from '../../booking/analytics'
 
 interface ModalContextValue {
   isOpen: boolean
@@ -27,7 +28,12 @@ export function useModal() {
 
 export function useModalState() {
   const [isOpen, setIsOpen] = useState(false)
-  const openModal = useCallback(() => setIsOpen(true), [])
+  const openModal = useCallback(() => {
+    // Every booking CTA of the site ends here, so this is the button click.
+    fbqTrack('ClickButton', { content_name: 'Trial Booking' })
+    ga4Event('click_button', { content_name: 'Trial Booking' })
+    setIsOpen(true)
+  }, [])
   const closeModal = useCallback(() => setIsOpen(false), [])
   return { isOpen, openModal, closeModal }
 }
