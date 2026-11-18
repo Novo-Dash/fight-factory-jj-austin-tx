@@ -5,8 +5,8 @@
 
 // vagas da oferta: o time atualiza só `taken`. Com 0, a página diz só "Only 20 spots"
 // Felipe, 13/11 (regra): vaga de BF nunca aparece zerada; sem número do cliente, 6 de 20 tomadas
-// cliente, 18/11: "Only 20 spots" (pedido explícito, vence a regra das 6 tomadas)
-const spots = { total: 20, taken: 0 }
+// 18/11: total de 20 do cliente, com 6 já preenchidas (pedido do Lucas)
+const spots = { total: 20, taken: 6 }
 const left = spots.total - spots.taken
 const spotsLine = spots.taken ? `${left} ${left === 1 ? 'spot' : 'spots'} left` : `Only ${spots.total} spots`
 
