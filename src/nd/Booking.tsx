@@ -57,7 +57,13 @@ export function BookingProvider({ children, unit, source, audience, copy: pageCo
   const c = unitOf(unit)
   const [options, setOptions] = useState<Options | null>(null)
   const open = useCallback(
-    (o?: Options) => setOptions({ unit, source, audience, copy: pageCopy, leadOnly, leadExtra, payment, ...o }),
+    (o?: Options) => {
+      // Every booking CTA (#book link or open() from a card) ends here, so this is the button click.
+      const t = unitOf(o?.unit ?? unit).tracking
+      fbTrack({ custom: 'ClickButton' }, { content_name: 'Trial Booking' }, undefined, t)
+      gaTrack('click_button', { content_name: 'Trial Booking' }, t)
+      setOptions({ unit, source, audience, copy: pageCopy, leadOnly, leadExtra, payment, ...o })
+    },
     [unit, source, audience, pageCopy, leadOnly, leadExtra, payment],
   )
   const close = useCallback(() => setOptions(null), [])
